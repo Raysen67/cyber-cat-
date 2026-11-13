@@ -1,0 +1,3036 @@
+<!DOCTYPE html>
+<html lang="zh-TW"><head><script data-bard-client-injected="true">(function(firebaseConfig, initialAuthToken, appId) {
+        window.__firebase_config = firebaseConfig;
+        window.__initial_auth_token = initialAuthToken;
+        window.__app_id = appId;
+            })("\n{\n  \"apiKey\": \"AIzaSyCqyCcs2R2e7AegGjvFAwG98wlamtbHvZY\",\n  \"authDomain\": \"bard-frontend.firebaseapp.com\",\n  \"projectId\": \"bard-frontend\",\n  \"storageBucket\": \"bard-frontend.firebasestorage.app\",\n  \"messagingSenderId\": \"175205271074\",\n  \"appId\": \"1:175205271074:web:2b7bd4d34d33bf38e6ec7b\"\n}\n","eyJhbGciOiJSUzI1NiIsImtpZCI6IjExNjRiNzdiNDMzZDdhMDAyMWI4NjE4YjhjYTU3ZTMyZGI5MWUxMTMiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BiYXJkLWZyb250ZW5kLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwiYXVkIjoiaHR0cHM6Ly9pZGVudGl0eXRvb2xraXQuZ29vZ2xlYXBpcy5jb20vZ29vZ2xlLmlkZW50aXR5LmlkZW50aXR5dG9vbGtpdC52MS5JZGVudGl0eVRvb2xraXQiLCJ1aWQiOiIxMjk4MDMyNjM4NDI1NzkwODI3NiIsImlzcyI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQGJhcmQtZnJvbnRlbmQuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCJjbGFpbXMiOnsiYXBwSWQiOiJjXzgzZTFmOTMwZjQ2MDdiODlfY3liZXJfY2F0X2RlbGl2ZXJ5Lmh0bWwtNjUxIn0sImV4cCI6MTc5NDUwMTE3NywiaWF0IjoxNzk0NDk3NTc3LCJhbGciOiJSUzI1NiJ9.DtmwGLVjNNeOkK-42QBLie2H-erG7cMFYvhcfoFYLUicBKHgzj3ojMke0fEdjm5BQlwbnLMfZG_k2j4sG_WOVbC7g_wN32-2_c6RqA6MpKbeZOzy-qfeza3uDRisoT_R_xUBq3jP9CXC22_YoDeA2Si9aOCaMEatsTQZrbZUjIvQ8NSGeIVUWAziGfxIzTjwMEDZpxNwVFJ1Wc-WpWbOeT9WS7ZS7FTJuWjdUnT8R1X3ZYrewdeLMvpCrG7JmT23shsQWPyjAlz36lOjKeZNqs6tMStl61y4Ce5DGdBjNSqSNBaldGbmfp1xJPdmFG5u2HVBmlrmMzHh9-AnGKjN6g","c_83e1f930f4607b89_cyber_cat_delivery.html-651")</script><script data-bard-client-injected="true">
+  document.addEventListener('input', (event) => {
+    if (event.target && (event.target.isContentEditable || event.target.hasAttribute('contenteditable'))) {
+      const clonedDoc = document.cloneNode(true);
+      const injectedScripts = clonedDoc.querySelectorAll('[data-bard-client-injected="true"]');
+      injectedScripts.forEach(el => el.remove());
+      window.parent.postMessage({
+        type: 'inlineEdit',
+        html: '<!DOCTYPE html>\n' + clonedDoc.documentElement.outerHTML
+      }, '*');
+    }
+  });
+</script><script data-bard-client-injected="true">(function(){'use strict';window.addEventListener("message",a=>{a.data&&a.data.type==="SUPPLEMENTAL_DATA_UPDATE"&&window.dispatchEvent(new CustomEvent("supplementaldataupdate",{detail:a.data.data}))});}).call(this);
+</script><script data-bard-client-injected="true">(function() {
+  const SCROLL_KEYS = new Set([
+    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+    ' ', 'Spacebar', 'PageUp', 'PageDown', 'Home', 'End',
+  ]);
+  const HORIZONTAL_KEYS = new Set(['ArrowLeft', 'ArrowRight']);
+
+  function isTextEntryTarget(target) {
+    if (!target) return false;
+    const tagName = target.tagName;
+    return tagName === 'INPUT' || tagName === 'TEXTAREA' ||
+        tagName === 'SELECT' || target.isContentEditable === true;
+  }
+
+  // An element absorbs the key only if it both overflows on the axis being
+  // scrolled and is configured to scroll on that axis. The cheap dimension
+  // test runs first because getComputedStyle forces a style recalc, and this
+  // runs on every keypress. Each axis is read from its own longhand: the
+  // 'overflow' shorthand serializes as two values when the axes differ, which
+  // is the common 'overflow-x: hidden; overflow-y: auto' pane.
+  function canScroll(node, horizontal) {
+    const overflows = horizontal ? node.scrollWidth > node.clientWidth
+                                 : node.scrollHeight > node.clientHeight;
+    if (!overflows) return false;
+    const style = window.getComputedStyle(node);
+    const overflow = horizontal ? style.overflowX : style.overflowY;
+    return overflow === 'auto' || overflow === 'scroll';
+  }
+
+  // Walks up from the event target so nested scrollers keep their behavior.
+  // <body> is included because pages that pin the root height make it the
+  // scroll container.
+  function hasScrollableAncestor(target, horizontal) {
+    let node = target;
+    while (node && node !== document.documentElement) {
+      if (canScroll(node, horizontal)) return true;
+      node = node.parentElement;
+    }
+    return false;
+  }
+
+  function rootCanScroll(horizontal) {
+    const scroller = document.scrollingElement || document.documentElement;
+    if (!scroller) return false;
+    // Tolerate a pixel of rounding so subpixel layouts do not look scrollable.
+    return horizontal ? scroller.scrollWidth > window.innerWidth + 1
+                      : scroller.scrollHeight > window.innerHeight + 1;
+  }
+
+  window.addEventListener('keydown', function(event) {
+    if (!SCROLL_KEYS.has(event.key)) return;
+    if (event.defaultPrevented) return;
+    // Alt and Meta turn arrows into browser history navigation, and Ctrl is
+    // reserved for shortcuts, so none of them are scroll intent.
+    if (event.altKey || event.metaKey || event.ctrlKey) return;
+
+    const target = event.target;
+    if (isTextEntryTarget(target)) return;
+
+    // Anything that can still absorb the scroll gets to keep it.
+    const horizontal = HORIZONTAL_KEYS.has(event.key);
+    if (rootCanScroll(horizontal)) return;
+    if (hasScrollableAncestor(target, horizontal)) return;
+
+    event.preventDefault();
+  }, {capture: true, passive: false});
+})();</script><script data-bard-client-injected="true">(function() {
+  // Ensure this script is executed only once
+  if (window.firebaseAuthBridgeScriptLoaded) {
+    return;
+  }
+  window.firebaseAuthBridgeScriptLoaded = true;
+
+  let nextTokenPromiseId = 0;
+
+  // Stores { resolve, reject } for ongoing token requests
+  const pendingTokenPromises = {};
+
+  // Listen for messages from the Host Application
+  window.addEventListener('message', function(event) {
+
+    const messageData = event.data;
+
+  if (messageData && messageData.type === 'RESOLVE_NEW_FIREBASE_TOKEN') {
+      const { success, token, error, promiseId } = messageData ?? {};
+      if (pendingTokenPromises[promiseId]) {
+        if (success) {
+          pendingTokenPromises[promiseId].resolve(token);
+        } else {
+          pendingTokenPromises[promiseId].reject(new Error(error || 'Token refresh failed from host.'));
+        }
+        delete pendingTokenPromises[promiseId];
+      }
+    }
+  });
+
+  // Expose a function for the Generated App to request a new Firebase token
+  window.requestNewFirebaseToken = function() {
+    const currentPromiseId = nextTokenPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingTokenPromises[currentPromiseId] = { resolve, reject };
+    });
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'REQUEST_NEW_FIREBASE_TOKEN',
+        promiseId: currentPromiseId
+      }, '*');
+    } else {
+      pendingTokenPromises[currentPromiseId].reject(new Error('No parent window to request token from.'));
+      delete pendingTokenPromises[currentPromiseId];
+    }
+    return promise;
+  };
+})();</script><script data-bard-client-injected="true">
+let realOriginalGetUserMedia = null;
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  realOriginalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+}
+
+(function() {
+  if (navigator.mediaDevices && navigator.mediaDevices.__proto__) {
+    try {
+      Object.defineProperty(navigator.mediaDevices.__proto__, 'getUserMedia', {
+        get: function() {
+          return undefined; // Or throw an error
+        },
+        configurable: false
+      });
+    } catch (error) {
+      console.error("Error defining prototype getter:", error);
+    }
+  }
+})();
+
+(function() {
+  const pendingMediaResolvers = {};
+  let nextMediaPromiseId = 0;
+
+  function requestMediaPermissions(constraints) {
+    const mediaPromiseId = nextMediaPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingMediaResolvers[mediaPromiseId] = (granted) => {
+        delete pendingMediaResolvers[mediaPromiseId];
+        resolve(granted);
+      };
+    });
+
+    window.parent.postMessage({
+      type: 'requestMediaPermission',
+      constraints: constraints,
+      promiseId: mediaPromiseId,
+    }, '*');
+
+    return promise;
+  }
+
+  let originalGetUserMedia = realOriginalGetUserMedia;
+
+  function interceptGetUserMedia() {
+    if (navigator.mediaDevices) {
+      Object.defineProperty(navigator.mediaDevices, 'getUserMedia', {
+        value: function(constraints) {
+          return requestMediaPermissions(constraints).then((granted) => {
+            if (granted) {
+              if (originalGetUserMedia) {
+                return originalGetUserMedia(constraints);
+              } else {
+                throw new Error("Original getUserMedia not available.");
+              }
+            } else {
+              throw new DOMException('Permission denied', 'NotAllowedError');
+            }
+          });
+        },
+        writable: false,
+        configurable: false
+      });
+    }
+  }
+
+  interceptGetUserMedia();
+
+  const observer = new MutationObserver(function(mutationsList, observer) {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'reconfigured' && mutation.name === 'getUserMedia' && mutation.object === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'attributes' && mutation.attributeName === 'getUserMedia' && mutation.target === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'childList' && mutation.addedNodes) {
+        mutation.addedNodes.forEach(node => {
+          if (node === navigator.mediaDevices) {
+            interceptGetUserMedia();
+          }
+        });
+      }
+    }
+  });
+
+  function interceptSpeechRecognition() {
+    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+      return;
+    }
+
+    const OriginalSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    const SpeechRecognitionWrapper = function(...args) {
+      const recognizer = new OriginalSpeechRecognition(...args);
+      const originalStart = recognizer.start.bind(recognizer);
+
+      recognizer.start = function() {
+        requestMediaPermissions({ audio: true }).then(granted => {
+          if (granted) {
+            originalStart();
+          } else {
+            const errorEvent = new SpeechRecognitionErrorEvent('error');
+            errorEvent.error = 'not-allowed'; // This is the standard error for permission denial.
+            recognizer.dispatchEvent(errorEvent);
+          }
+        });
+      };
+
+      return recognizer;
+    };
+
+    SpeechRecognitionWrapper.prototype = OriginalSpeechRecognition.prototype;
+    SpeechRecognitionWrapper.prototype.constructor = SpeechRecognitionWrapper;
+
+    if (window.SpeechRecognition) {
+      window.SpeechRecognition = SpeechRecognitionWrapper;
+    }
+    if (window.webkitSpeechRecognition) {
+      window.webkitSpeechRecognition = SpeechRecognitionWrapper;
+    }
+  }
+
+  interceptSpeechRecognition();
+
+  window.addEventListener('message', function(event) {
+    if (event.data) {
+      if (event.data.type === 'resolveMediaPermission') {
+        const { promiseId, granted } = event.data;
+        if (pendingMediaResolvers[promiseId]) {
+          pendingMediaResolvers[promiseId](granted);
+        }
+      }
+    }
+  });
+
+})();</script><script ws-interception-config="{&quot;parentOrigin&quot;:&quot;https://gemini.google.com&quot;,&quot;proxiedDomains&quot;:[]}" data-bard-client-injected="true">(function(){'use strict';var u=typeof Object.defineProperties=="function"?Object.defineProperty:function(b,d,e){if(b==Array.prototype||b==Object.prototype)return b;b[d]=e.value;return b};function v(b){b=["object"==typeof globalThis&&globalThis,b,"object"==typeof window&&window,"object"==typeof self&&self,"object"==typeof global&&global];for(var d=0;d<b.length;++d){var e=b[d];if(e&&e.Math==Math)return e}throw Error("Cannot find global object");}var w=v(this);
+function y(b,d){if(d)a:{var e=w;b=b.split(".");for(var h=0;h<b.length-1;h++){var k=b[h];if(!(k in e))break a;e=e[k]}b=b[b.length-1];h=e[b];d=d(h);d!=h&&d!=null&&u(e,b,{configurable:!0,writable:!0,value:d})}}function z(b){function d(h){return b.next(h)}function e(h){return b.throw(h)}return new Promise(function(h,k){function m(n){n.done?h(n.value):Promise.resolve(n.value).then(d,e).then(m,k)}m(b.next())})}y("globalThis",function(b){return b||w});/*
+
+ Copyright The Closure Library Authors.
+ SPDX-License-Identifier: Apache-2.0
+*/
+function A(b,d){function e(){}e.prototype=d.prototype;b.j=d.prototype;b.prototype=new e;b.prototype.constructor=b;b.h=function(h,k,m){for(var n=Array(arguments.length-2),p=2;p<arguments.length;p++)n[p-2]=arguments[p];return d.prototype[k].apply(h,n)}};function B(b,d,e="*"){function h(a){if(typeof a==="string")return F.encode(a).buffer;if(a instanceof ArrayBuffer)return a.slice(0);if(ArrayBuffer.isView(a))return a.buffer.slice(a.byteOffset,a.byteOffset+a.byteLength);throw Error("Invalid data type");}function k(a){a=h(a);var f={type:"send",data:new Uint8Array(a)},g;(g=r)==null||g.postMessage(f,[a])}function m(){if(!r)throw Error("Data port not captured yet.");r.onmessage=a=>{if(a.data.type==="message"){a=new MessageEvent("message",{data:G.decode(a.data.data)});
+let f;(f=c.onmessage)==null||f.call(c,a);c.dispatchEvent(a)}}}function n(){if(!t)throw Error("Control port not captured yet.");t.onmessage=a=>{switch(a.data.type){case "open":l=1;var f=new Event("open"),g;(g=c.onopen)==null||g.call(c,f);c.dispatchEvent(f);q.forEach(H=>{k(H)});q=[];break;case "close":g=a.data;l=3;g=new CloseEvent("close",{code:g.code,reason:g.reason,wasClean:g.wasClean});(f=c.onclose)==null||f.call(c,g);c.dispatchEvent(g);break;case "error":l=3;f=new Event("error");let x;(x=c.onerror)==
+null||x.call(c,f);c.dispatchEvent(f)}}}function p(a){return z(function*(){var f=new MessageChannel;t=f.port1;var g=new MessageChannel;r=g.port1;n();m();window.parent.postMessage({type:"websocket_open",portOrdering:["control","data"],url:b,protocols:a||[],connectionId:I},e,[f.port2,g.port2])}())}var c=Reflect.construct(EventTarget,[],new.target);c.CONNECTING=0;c.OPEN=1;c.CLOSING=2;c.CLOSED=3;c.url=b;c.binaryType="arraybuffer";c.protocol="";c.i="";var l=0,t=null,r=null,q=[],F=new TextEncoder,G=new TextDecoder;
+c.onopen=null;c.onmessage=null;c.onclose=null;c.onerror=null;Object.defineProperty(c,"readyState",{get:()=>l,enumerable:!0,configurable:!0});Object.defineProperty(c,"bufferedAmount",{get:()=>{var a=0;q.forEach(f=>{a+=typeof f==="string"?f.length:f.byteLength});return a},enumerable:!0,configurable:!0});var I=function(){var a;return((a=globalThis.crypto)==null?0:a.randomUUID)?globalThis.crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,f=>{var g=Math.random()*16|0;return(f===
+"x"?g:g&3|8).toString(16)})}();c.send=a=>{if(l===1)a instanceof Blob?a.arrayBuffer().then(f=>{k(f)}):k(a);else if(l===0)if(typeof a==="string")q.push(a);else if(a instanceof ArrayBuffer||ArrayBuffer.isView(a))q.push(h(a));else throw Error("Sending Blob is not supported before the connection is open.");else console.debug("WebSocket send called in CLOSING or CLOSED state; ignored.")};c.close=(a=1E3,f="")=>{if(l!==2&&l!==3){l=2;a={type:"close",code:a,reason:f,wasClean:a===1E3};var g;(g=t)==null||g.postMessage(a)}};
+Promise.resolve().then(()=>p(d));return c}A(B,EventTarget);var C=document.currentScript,D=C==null?void 0:C.getAttribute("ws-interception-config");if(!D)throw Error("WebSocket Interceptor: Missing ws-interception-config attribute in the script tag.");var E=JSON.parse(D);if(!E.parentOrigin||typeof E.parentOrigin!=="string")throw Error("WebSocket Interceptor: Invalid parentOrigin in ws-interception-config");
+(function(b){var d=Object.getOwnPropertyDescriptor(window,"WebSocket");if(!d||d.writable||d.configurable)d=Object.assign(function(e,h){try{let k=(new URL(e)).hostname;if(b.proxiedDomains.some(m=>k===m||k.endsWith(`.${m}`)))return new B(e,h,b.parentOrigin)}catch(k){throw window.parent.postMessage({type:"websocket_blocked",url:e,reason:"blocked_invalid_url"},b.parentOrigin),new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");}window.parent.postMessage({type:"websocket_blocked",
+url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");},{CONNECTING:0,OPEN:1,CLOSING:2,CLOSED:3}),Object.defineProperty(window,"WebSocket",{value:d,writable:!1,configurable:!1})})({proxiedDomains:E.proxiedDomains||[],parentOrigin:E.parentOrigin});}).call(this);
+</script><script data-bard-client-injected="true">(function() {
+  function normalizeSlug(str) {
+    try {
+      return str
+        .trim()
+        .toLowerCase()
+        .replace(/[^p{L}p{N}s_-]/gu, '')
+        .replace(/s+/g, '-');
+    } catch (e) {
+      return str
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9s_-]/g, '')
+        .replace(/s+/g, '-');
+    }
+  }
+
+  function findTargetElement(hash) {
+    if (!hash || hash === '#') {
+      return null;
+    }
+    const rawId = hash.startsWith('#') ? hash.slice(1) : hash;
+    let decodedId = rawId;
+    try {
+      decodedId = decodeURIComponent(rawId);
+    } catch (e) {
+      // Ignore URI malformed errors.
+    }
+
+    // 1. Direct ID match (raw and decoded).
+    let target = document.getElementById(rawId) || document.getElementById(decodedId);
+    if (target) {
+      return target;
+    }
+
+    // 2. Name attribute match (<a name="...">).
+    try {
+      if (typeof CSS !== 'undefined' && CSS.escape) {
+        target =
+          document.querySelector('[name="' + CSS.escape(rawId) + '"]') ||
+          document.querySelector('[name="' + CSS.escape(decodedId) + '"]');
+      } else {
+        const namedElements = document.getElementsByName(rawId);
+        if (namedElements && namedElements.length > 0) {
+          return namedElements[0];
+        }
+      }
+    } catch (e) {
+      // Ignore querySelector syntax errors.
+    }
+    if (target) {
+      return target;
+    }
+
+    // 3. Match heading text by slug (for Markdown TOCs where headings lack explicit IDs).
+    const targetSlug = normalizeSlug(decodedId);
+    if (targetSlug) {
+      for (const heading of document.querySelectorAll('h1, h2, h3, h4, h5, h6')) {
+        if (normalizeSlug(heading.textContent || '') === targetSlug) {
+          return heading;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  document.addEventListener('click', function(event) {
+    const target = event.target;
+    const anchor = target && typeof target.closest === 'function' ? target.closest('a') : null;
+    if (!anchor) {
+      return;
+    }
+
+    const href = anchor.getAttribute('href');
+    if (
+      !href ||
+      href.trim().toLowerCase().startsWith('javascript:') ||
+      anchor.hasAttribute('download')
+    ) {
+      return;
+    }
+
+    // Check if the link is an in-page hash / anchor link.
+    if (href.startsWith('#')) {
+      event.preventDefault();
+      const targetElement = findTargetElement(href);
+      if (targetElement) {
+        targetElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+      }
+      return;
+    }
+
+    // Check if the URL has the same origin/pathname but with a hash.
+    try {
+      const url = new URL(anchor.href, window.location.href);
+      if (
+        url.hash &&
+        url.origin === window.location.origin &&
+        url.pathname === window.location.pathname
+      ) {
+        event.preventDefault();
+        const targetElement = findTargetElement(url.hash);
+        if (targetElement) {
+          targetElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+        return;
+      }
+    } catch (e) {
+      // Fall through if URL parsing fails.
+    }
+
+    // For all external or full navigation links, prevent iframe-level navigation
+    // (which breaks in AGSA WebView or sandboxed iframes) and ensure they open
+    // safely in a new tab/window.
+    if (anchor.target !== '_blank') {
+      event.preventDefault();
+      window.open(anchor.href, '_blank', 'noopener,noreferrer');
+    }
+  }, {capture: true});
+})();</script><script data-bard-client-injected="true">(function(){'use strict';function a(){window.parent.postMessage({type:"interaction"},"*")}window.addEventListener("click",a,{capture:!0,passive:!0});window.addEventListener("touchstart",a,{capture:!0,passive:!0});window.addEventListener("keydown",a,{capture:!0,passive:!0});}).call(this);
+</script><script data-bard-client-injected="true">(function() {
+  const originalConsoleLog = console.log;
+  const originalConsoleError = console.error;
+
+    /**
+   * Normalizes an error event or a promise rejection reason into a structured error object.
+   * @param {*} errorEventOrReason The error object or reason.
+   * @return {object} Structured error data { message, name, stack }.
+   */
+  function getErrorObject(errorEventOrReason) {
+    if (errorEventOrReason instanceof Error) {
+      return {
+        message: errorEventOrReason.message,
+        name: errorEventOrReason.name,
+        stack: errorEventOrReason.stack,
+      };
+    }
+    // Fallback for non-Error objects.
+    try {
+      return {
+        message: JSON.stringify(errorEventOrReason),
+        name: 'UnknownErrorType',
+        stack: null,
+      };
+    } catch (e) {
+      return {
+        message: String(errorEventOrReason),
+        name: 'UnknownErrorTypeNonStringifiable',
+        stack: null,
+      };
+    }
+  }
+
+  /**
+   * Converts an array of arguments (from log/error) into a single string.
+   * Handles Error objects specially to include their message and stack.
+   * @param {Array<*>} args - Arguments passed to console methods.
+   * @return {string} A string representation of the arguments.
+   */
+  function stringifyArgs(args) {
+    return args
+      .map((arg) => {
+        if (arg instanceof Error) {
+          const {message, stack} = arg;
+          return `Error: ${message}${stack ? ('\nStack: ' + stack) : ''}`;
+        }
+        if (typeof arg === 'object' && arg !== null) {
+          try {
+            return JSON.stringify(arg);
+          } catch (error) {
+            return '[Circular Object]';
+          }
+        } else {
+          return String(arg);
+        }
+      })
+      .join(' ');
+  }
+
+  console.log = function(...args) {
+    const logString = stringifyArgs(args);
+    window.parent.postMessage({ type: 'log', message: logString }, '*');
+    originalConsoleLog.apply(console, args);
+  };
+
+  console.error = function(...args) {
+    let errorData;
+    if (args.length > 0 && args[0] instanceof Error) {
+      const err = args[0];
+      // If the first arg is an Error, capture its details.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        ...getErrorObject(err),
+        rawArgsString: stringifyArgs(args.slice(1)),
+        timestamp: new Date().toISOString(),
+      };
+    } else {
+      // If not an Error object, treat all args as a general error message.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        message: stringifyArgs(args),
+        name: 'ConsoleLoggedError',
+        stack: null,
+        timestamp: new Date().toISOString(),
+      };
+    }
+    window.parent.postMessage(errorData, '*');
+    originalConsoleError.apply(console, args);
+  };
+
+  // Listen for global unhandled synchronous errors.
+  window.addEventListener('error', function(event) {
+    const errorDetails = event.error ? getErrorObject(event.error) : {
+      message: event.message,
+      name: 'GlobalError',
+      stack: null,
+      filename: event.filename,
+      lineno: event.lineno,
+      colno: event.colno,
+    };
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'global',
+      ...errorDetails,
+      message: errorDetails.message || event.message,
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+  // Listen for unhandled promise rejections (asynchronous errors).
+  window.addEventListener('unhandledrejection', function(event) {
+    const errorDetails = getErrorObject(event.reason);
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'unhandledrejection',
+      ...errorDetails,
+      message: errorDetails.message || 'Unhandled Promise Rejection',
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+})();</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>賽博貓咪外送員 | CYBER CAT DELIVERY (8-BIT NES)</title>
+  <!-- 載入復古像素字體與繁體中文支援字體 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&amp;family=Press+Start+2P&amp;display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      margin: 0;
+      padding: 16px;
+      min-height: 100vh;
+      background-color: #090b16;
+      background-image:
+        radial-gradient(circle at 50% 25%, #192048 0%, #090b16 70%);
+      color: #f8f8f8;
+      font-family: 'Press Start 2P', 'DotGothic16', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+    }
+
+    /* 復古街機/電視外框 */
+    .cabinet {
+      background: #1c2038;
+      border: 4px solid #3c4675;
+      border-radius: 14px;
+      padding: 16px 20px 20px;
+      box-shadow:
+        0 0 0 4px #0d1021,
+        0 18px 45px rgba(0, 0, 0, 0.85),
+        inset 0 2px 0 rgba(255, 255, 255, 0.12);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 100%;
+    }
+
+    .header-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 0 4px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .game-title {
+      font-size: 14px;
+      color: #00f5d4;
+      text-shadow: 2px 2px 0 #0a2e36, 0 0 10px rgba(0, 245, 212, 0.5);
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      font-family: 'DotGothic16', monospace;
+      font-size: 14px;
+      color: #ffbe0b;
+      letter-spacing: 2px;
+    }
+
+    /* 螢幕容器與 CRT 掃描線質感 */
+    .screen-bezel {
+      position: relative;
+      padding: 8px;
+      background: #070913;
+      border: 4px solid #2b3359;
+      border-radius: 8px;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9);
+    }
+
+    /* 邏輯解析度 256x240，CSS 嚴格放大 2.5 倍至 640x600 */
+    canvas#gameCanvas {
+      display: block;
+      width: 640px;
+      height: 600px;
+      max-width: calc(100vw - 64px);
+      max-height: calc((100vw - 64px) * 0.9375);
+      background-color: #141836;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: -webkit-crisp-edges;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    /* 底部操作說明與音效按鈕 */
+    .controls-panel {
+      margin-top: 14px;
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: 10px;
+      color: #b8c2eb;
+      background: #12162b;
+      border: 2px solid #2c355c;
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+
+    .key-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      font-family: 'DotGothic16', 'Press Start 2P', monospace;
+      font-size: 13px;
+    }
+
+    .key-badge {
+      display: inline-block;
+      background: #273059;
+      color: #00f5d4;
+      border: 1px solid #495899;
+      border-bottom-width: 3px;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      margin-right: 4px;
+    }
+
+    .btn-retro {
+      background: #2b3566;
+      color: #ffbe0b;
+      border: 2px solid #5969b3;
+      border-bottom-width: 4px;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      cursor: pointer;
+      transition: transform 0.05s;
+    }
+
+    .btn-retro:active {
+      transform: translateY(2px);
+      border-bottom-width: 2px;
+    }
+
+    /* 行動裝置觸控按鈕（桌面版自動隱藏，小螢幕顯示） */
+    .touch-controls {
+      display: none;
+      width: 100%;
+      margin-top: 12px;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .touch-pad {
+      display: flex;
+      gap: 10px;
+    }
+
+    .touch-btn {
+      width: 56px;
+      height: 52px;
+      background: #232b52;
+      border: 2px solid #4e5fa6;
+      border-bottom-width: 4px;
+      border-radius: 10px;
+      color: #00f5d4;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: manipulation;
+    }
+
+    .touch-btn:active, .touch-btn.pressed {
+      background: #36437d;
+      transform: translateY(2px);
+      border-bottom-width: 2px;
+    }
+
+    @media (max-width: 680px) {
+      .cabinet {
+        padding: 10px;
+      }
+      .touch-controls {
+        display: flex;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cabinet">
+    <div class="header-bar">
+      <div class="game-title">CYBER CAT DELIVERY</div>
+      <div class="subtitle">賽博貓咪外送員 8-BIT</div>
+    </div>
+
+    <div class="screen-bezel">
+      <!-- 邏輯解析度嚴格固定為 256 x 240，內部使用高解析度整數倍離屏緩衝確保極致銳利 -->
+      <canvas id="gameCanvas" width="768" height="720" tabindex="0"></canvas>
+    </div>
+
+    <div class="controls-panel">
+      <div class="key-group">
+        <span><span class="key-badge">← → / ◀ ▶</span>移動</span>
+        <span><span class="key-badge">SPACE / JUMP</span>跳躍(長按大跳)</span>
+        <span><span class="key-badge">↓ / S / ▼</span>空中蓄力重砸開箱</span>
+        <span><span class="key-badge">H / ?</span>中文規則</span>
+        <span><span class="key-badge">R</span>重玩</span>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button id="stageBtn" class="btn-retro" style="color: rgb(0, 245, 212);" title="切換關卡難度 (1~4)">關卡: 1簡單</button>
+        <button id="sharpBtn" class="btn-retro" style="color:#00f5d4;" title="切換極致銳利高清渲染">HD: 銳利</button>
+        <button id="helpBtn" class="btn-retro" style="color:#00f5d4;" title="查看中文遊戲規則 (H)">規則 [H]</button>
+        <button id="muteBtn" class="btn-retro" title="切換音效 (M)">SFX: ON [M]</button>
+        <button id="openTabBtn" class="btn-retro" style="color:#ff75a0; border-color:#ff75a0;" title="直接在瀏覽器新分頁開啟遊玩，不需下載檔案">↗ 獨立視窗遊玩</button>
+        <button id="downloadBtn" class="btn-retro" style="color:#8ac926; border-color:#8ac926;" title="下載完整單機 HTML 遊戲檔案">⬇ 下載遊戲</button>
+      </div>
+    </div>
+
+    <!-- 觸控裝置虛擬按鍵 -->
+    <div class="touch-controls">
+      <div class="touch-pad">
+        <button class="touch-btn" id="btnLeft">◀</button>
+        <button class="touch-btn" id="btnRight">▶</button>
+      </div>
+      <div class="touch-pad">
+        <button class="touch-btn" id="btnStage" style="font-size:10px; color:#ff595e;">關卡</button>
+        <button class="touch-btn" id="btnHelp" style="font-size:11px; color:#00f5d4;">規則</button>
+        <button class="touch-btn" id="btnRestart" style="font-size:10px; color:#ffbe0b;">重玩</button>
+        <button class="touch-btn" id="btnSmash" style="width:62px; font-size:11px; color:#ffbe0b;">▼重砸</button>
+        <button class="touch-btn" id="btnJump" style="width:68px; color:#ff595e;">JUMP</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * ============================================================================
+     * 《賽博貓咪外送員》CYBER CAT DELIVERY - 8-BIT NES ENGINE
+     * 邏輯解析度: 256 x 240 (16x15 Tiles, 每格 16x16 像素)
+     * 嚴格遵守 16x16 像素矩陣精靈圖繪製與 X/Y 分離式 AABB 碰撞檢測
+     * ============================================================================
+     */
+
+    const CANVAS_WIDTH = 256;
+    const CANVAS_HEIGHT = 240;
+    const TILE_SIZE = 16;
+
+    // 顯示用高解析度主畫布（768x720，嚴格 3 倍整數倍率消除瀏覽器縮放模糊）
+    const displayCanvas = document.getElementById('gameCanvas');
+    const displayCtx = displayCanvas.getContext('2d', { alpha: false });
+    displayCtx.imageSmoothingEnabled = false;
+
+    // 邏輯運算用 256x240 離屏像素畫布（確保 100% 原汁原味紅白機像素座標）
+    const canvas = document.createElement('canvas');
+    canvas.width = CANVAS_WIDTH;
+    canvas.height = CANVAS_HEIGHT;
+    const ctx = canvas.getContext('2d', { alpha: false });
+    ctx.imageSmoothingEnabled = false;
+
+    const HD_SCALE = 3; // 高清文字與介面倍率 (768x720 = 256x240 * 3)
+    let ultraSharpMode = true;
+
+    // 高解析度清晰像素文字繪製工具（直接繪製於 768x720 高清層，並自動換算 256x240 邏輯座標）
+    function drawCrispText(targetCtx, text, lx, ly, options = {}) {
+      const {
+        size = 10,
+        color = '#ffffff',
+        align = 'left',
+        english = false,
+        shadow = true,
+        outline = true
+      } = options;
+
+      const scale = targetCtx === displayCtx && ultraSharpMode ? HD_SCALE : 1;
+      const pxSize = Math.round(size * scale);
+      const x = Math.round(lx * scale);
+      const y = Math.round(ly * scale);
+
+      targetCtx.save();
+      targetCtx.font = english
+        ? `${pxSize}px "Press Start 2P", monospace`
+        : `${pxSize}px "DotGothic16", "Press Start 2P", monospace`;
+      targetCtx.textAlign = align;
+      targetCtx.textBaseline = 'alphabetic';
+
+      if (outline && scale > 1) {
+        targetCtx.lineWidth = Math.max(2, Math.round(scale * 0.9));
+        targetCtx.lineJoin = 'round';
+        targetCtx.strokeStyle = '#090b16';
+        targetCtx.strokeText(text, x, y);
+      } else if (shadow) {
+        targetCtx.fillStyle = '#090b16';
+        targetCtx.fillText(text, x + scale, y + scale);
+      }
+
+      targetCtx.fillStyle = color;
+      targetCtx.fillText(text, x, y);
+      targetCtx.restore();
+    }
+
+    function ensureFocus() {
+      try {
+        window.focus();
+        displayCanvas.focus();
+      } catch (err) {
+        // 忽略 iframe 權限限制
+      }
+    }
+
+    // ============================================================================
+    // 3. 四大劇情關卡設計（簡單 -> 中等 -> 困難 -> 超困難，逐關加長與複雜化）
+    //    圖例：
+    //    '#' = roof_top (霓虹屋頂表面，可站立碰撞)
+    //    'B' = roof_body (屋頂建築磚塊牆體，可碰撞)
+    //    '?' = supply_box (發光黃色閃電補給箱，頂撞或空中重砸彈出黃金小魚乾)
+    //    'F' = floating fish (漂浮的黃金小魚乾)
+    //    'R' = rat (巡邏的偷吃老鼠起點)
+    //    'G' = goal (終點客人與發光拉麵招牌)
+    // ============================================================================
+    const STAGES = [
+      {
+        id: 1,
+        diffName: '簡單',
+        diffColor: '#00f5d4',
+        codeName: 'STAGE 01 - 新手屋頂街區',
+        timeLimit: 120,
+        ratSpeed: 0.65,
+        skyTop: '#141836',
+        story: [
+          '【第一章：深夜第一單】',
+          '新賽博市下起霓虹小雨，橘貓外送員剛領到',
+          '紅色保溫箱，接到街區工程師的豚骨拉麵訂單！',
+          '屋頂間距寬敞，先熟悉跳躍與空中重砸開箱吧！'
+        ],
+        blueprint: [
+          "....................................................................................................................................",
+          "....................................................................................................................................",
+          "....................................................................................................................................",
+          "....................................................................................................................................",
+          "....................................................................................................................................",
+          "....................................................................................................................................",
+          "............................................F.F.F..................................F.F..............................................",
+          "....................................................................................................................................",
+          ".....................?...................###########..............?............#########................?...........................",
+          ".............F.....#####.................BBBBBBBBBBB............#####..........BBBBBBBBB..............#####.........F.F.............",
+          "..........................R.................................................................................R.......................",
+          ".......#########......#########...................R......F.F..................R.....?....................#########............G.....",
+          "#######BBBBBBBBB......BBBBBBBBB......#####################..#####.......#############......#######.......BBBBBBBBB......############",
+          "BBBBBBBBBBBBBBBB......BBBBBBBBB......BBBBBBBBBBBBBBBBBBBBB..BBBBB.......BBBBBBBBBBBBB......BBBBBBB.......BBBBBBBBB......BBBBBBBBBBBB",
+          "BBBBBBBBBBBBBBBB......BBBBBBBBB......BBBBBBBBBBBBBBBBBBBBB..BBBBB.......BBBBBBBBBBBBB......BBBBBBB.......BBBBBBBBB......BBBBBBBBBBBB"
+        ]
+      },
+      {
+        id: 2,
+        diffName: '中等',
+        diffColor: '#ffbe0b',
+        codeName: 'STAGE 02 - 霓虹貨運高架',
+        timeLimit: 135,
+        ratSpeed: 0.85,
+        skyTop: '#19143a',
+        story: [
+          '【第二章：貨運高架的加急單】',
+          '拉麵口碑爆紅！這次訂單來自中央貨運塔頂端，',
+          '沿途出現連續斷層跳台與駐守地上補給箱的老鼠。',
+          '善用助跑長按大跳，並在空中按 [↓/S] 重砸破敵！'
+        ],
+        blueprint: [
+          "........................................................................................................................................................................",
+          "........................................................................................................................................................................",
+          "........................................................................................................................................................................",
+          "........................................................................................................................................................................",
+          ".......................................................F.F.F............................................F.F.............................................................",
+          "........................................................................................................................................................................",
+          "...............................?.....................#########...............F.F......................#######...................F.F.....................................",
+          "...................F.........#####...................BBBBBBBBB........................................BBBBBBB...........................................................",
+          "..........................................R..........................................?..................................................?...............................",
+          ".............#########..................#####....................#######...........#####.......?...................#######............#####..........F.F................",
+          ".............BBBBBBBBB..................BBBBB....................BBBBBBB...........BBBBB.....#####.................BBBBBBB............BBBBB.............................",
+          ".....?.....................R........................R.........................R............................R................R...................R................G......",
+          "#########....#########..#######....#####......#############....#####....#############....#############..#######....#############....#############....##################",
+          "BBBBBBBBB....BBBBBBBBB..BBBBBBB....BBBBB......BBBBBBBBBBBBB....BBBBB....BBBBBBBBBBBBB....BBBBBBBBBBBBB..BBBBBBB....BBBBBBBBBBBBB....BBBBBBBBBBBBB....BBBBBBBBBBBBBBBBBB",
+          "BBBBBBBBB....BBBBBBBBB..BBBBBBB....BBBBB......BBBBBBBBBBBBB....BBBBB....BBBBBBBBBBBBB....BBBBBBBBBBBBB..BBBBBBB....BBBBBBBBBBBBB....BBBBBBBBBBBBB....BBBBBBBBBBBBBBBBBB"
+        ]
+      },
+      {
+        id: 3,
+        diffName: '困難',
+        diffColor: '#ff8c24',
+        codeName: 'STAGE 03 - 摩天浮空霓虹陣',
+        timeLimit: 150,
+        ratSpeed: 1.05,
+        skyTop: '#211238',
+        story: [
+          '【第三章：駭客基地的秘密宵夜】',
+          '神秘駭客出三倍小費點名要「超辣地獄拉麵」！',
+          '高樓間只剩狹窄浮空鋼樑，老鼠巡邏速度大幅加快，',
+          '每一步落腳都必須精準控制小跳與大跳節奏！'
+        ],
+        blueprint: [
+          "........................................................................................................................................................................................................",
+          "........................................................................................................................................................................................................",
+          "........................................................................................................................................................................................................",
+          "........................................................................................................................................................................................................",
+          "..........................................F.F...............................................F.F.F...................................................F.F.................................................",
+          "........................................................................................................................................................................................................",
+          "........................?...............#######.....................?.....................#########...................F.F.........................#######.................F.F...........................",
+          "..............F.......#####.............BBBBBBB...................#####...................BBBBBBBBB...............................................BBBBBBB...............................................",
+          "......................................................R........................................................?................................................?.......................................",
+          "........#########.................?.................#####.................#######...........................?..#####............#######.......................#####.........?..........F.F................",
+          "........BBBBBBBBB...............#####...............BBBBB.................BBBBBBB.........................#####BBBBB............BBBBBBB.......................BBBBB.......#####.........................",
+          "...................R......R...............R....................R......................R...........R......................R..............R...........R...............R............R.................G....",
+          "######..#########..#######..#####....#########....#####....#########....#####....#############..#######....#####....#############....#######....#########....#############....#######......############",
+          "BBBBBB..BBBBBBBBB..BBBBBBB..BBBBB....BBBBBBBBB....BBBBB....BBBBBBBBB....BBBBB....BBBBBBBBBBBBB..BBBBBBB....BBBBB....BBBBBBBBBBBBB....BBBBBBB....BBBBBBBBB....BBBBBBBBBBBBB....BBBBBBB......BBBBBBBBBBBB",
+          "BBBBBB..BBBBBBBBB..BBBBBBB..BBBBB....BBBBBBBBB....BBBBB....BBBBBBBBB....BBBBB....BBBBBBBBBBBBB..BBBBBBB....BBBBB....BBBBBBBBBBBBB....BBBBBBB....BBBBBBBBB....BBBBBBBBBBBBB....BBBBBBB......BBBBBBBBBBBB"
+        ]
+      },
+      {
+        id: 4,
+        diffName: '超困難',
+        diffColor: '#ff595e',
+        codeName: 'STAGE 04 - 賽博雲端總部巔峰',
+        timeLimit: 165,
+        ratSpeed: 1.25,
+        skyTop: '#290f2e',
+        story: [
+          '【最終章：雲端總裁的終極考驗】',
+          '暴風雨前的最後一單！目標是賽博塔頂層總裁室，',
+          '一路上佈滿極限跳躍深淵、雙層高台與疾速老鼠群！',
+          '展現傳奇貓咪外送員的極限操作，把拉麵準時送到吧！'
+        ],
+        blueprint: [
+          "........................................................................................................................................................................................................................................",
+          "........................................................................................................................................................................................................................................",
+          "........................................................................................................................................................................................................................................",
+          "........................................................................................................................................................................................................................................",
+          "...................................F.F........................................F.F.F.............................................F.F.............................................F.F.F...................................................",
+          "........................................................................................................................................................................................................................................",
+          "................?................#######................?...................#########.................F.F.....................#######....................?....................#########.................F.F...........................",
+          "..........F...#####..............BBBBBBB..............#####.................BBBBBBBBB.........................................BBBBBBB..................#####..................BBBBBBBBB...............................................",
+          "............................................R...................................................?............................................R................................................?.........................................",
+          "......#######..............?..............#####...............#######.........................#####........?..............#######..........#####.................#######....................#####...........?..........F.F................",
+          "......BBBBBBB............#####............BBBBB...............BBBBBBB.........................BBBBB......#####............BBBBBBB..........BBBBB.................BBBBBBB....................BBBBB.........#####.........................",
+          "................R....R...........R..................R.................R...........R...................R.............R.................R............R.........R.............R...........R................R............R...........G....",
+          "#####..#######..######..#####..#######....#####..#######....#####..#######....#########....#####..#######....#########....#####..#######....#########..#######....#########....#############....#########..#######......############",
+          "BBBBB..BBBBBBB..BBBBBB..BBBBB..BBBBBBB....BBBBB..BBBBBBB....BBBBB..BBBBBBB....BBBBBBBBB....BBBBB..BBBBBBB....BBBBBBBBB....BBBBB..BBBBBBB....BBBBBBBBB..BBBBBBB....BBBBBBBBB....BBBBBBBBBBBBB....BBBBBBBBB..BBBBBBB......BBBBBBBBBBBB",
+          "BBBBB..BBBBBBB..BBBBBB..BBBBB..BBBBBBB....BBBBB..BBBBBBB....BBBBB..BBBBBBB....BBBBBBBBB....BBBBB..BBBBBBB....BBBBBBBBB....BBBBB..BBBBBBB....BBBBBBBBB..BBBBBBB....BBBBBBBBB....BBBBBBBBBBBBB....BBBBBBBBB..BBBBBBB......BBBBBBBBBBBB"
+        ]
+      }
+    ];
+
+    let currentStageIndex = 0; // 0:簡單, 1:中等, 2:困難, 3:超困難
+    let LEVEL_BLUEPRINT = STAGES[0].blueprint;
+    let LEVEL_ROWS = LEVEL_BLUEPRINT.length;
+    let LEVEL_COLS = LEVEL_BLUEPRINT[0].length;
+
+    // ============================================================================
+    // 1. 8-BIT 調色盤與嚴格 16x16 像素矩陣定義 (SPRITES)
+    // ============================================================================
+    const PALETTE = {
+      '.': null,        // 透明
+      'K': '#0b0c14',   // 純黑像素外框
+      'W': '#ffffff',   // 純白亮部
+      'O': '#ff8c24',   // 橘貓主色
+      'D': '#d95b16',   // 橘貓陰影
+      'R': '#e63946',   // 紅色外送保溫箱
+      'M': '#9e1925',   // 保溫箱深紅陰影
+      'Y': '#ffd60a',   // 黃金小魚乾 / 閃電亮黃
+      'A': '#e09f00',   // 金黃陰影
+      'C': '#00f5d4',   // 亮青色霓虹燈條
+      'B': '#009688',   // 青色暗部
+      'G': '#4a5568',   // 屋頂水泥亮灰
+      'S': '#2d3748',   // 屋頂水泥主灰
+      'E': '#1a202c',   // 屋頂水泥深灰
+      'N': '#3b4252',   // 老鼠灰黑毛色
+      'P': '#ff75a0',   // 老鼠粉紅耳朵與鼻子
+      'T': '#ffcdb2',   // 客人膚色
+      'V': '#3a86ff',   // 客人賽博藍外套
+      'H': '#8338ec'    // 客人深紫長褲
+    };
+
+    const SPRITES = {
+      // 主角：橘貓外送員（站立幀 - 尖耳朵、橘臉、白肚子、紅色外送保溫箱）
+      cat_idle: [
+        "....KK....KK....",
+        "...KOOK..KOOK...",
+        "...KOOOKKOOOK...",
+        "...KOOOOOOOOOK..",
+        "..KOOOKOOOKOOOK.",
+        "..KOOOOOOOOOOOK.",
+        "..KDOOOOOOOOODK.",
+        ".KKKKKWWWWKKKK..",
+        "KRRRRKWWWWKOOOK.",
+        "KRYYRKWWWWKOOOK.",
+        "KRRRRKWWWWKKKK..",
+        "KMMMMKWWWWK.....",
+        ".KKKK.KWWK......",
+        ".....KOOKOK.....",
+        ".....KDOODK.....",
+        ".....KKKKKK....."
+      ],
+
+      // 主角：橘貓外送員（跑步第 1 幀）
+      cat_run1: [
+        "....KK....KK....",
+        "...KOOK..KOOK...",
+        "...KOOOKKOOOK...",
+        "...KOOOOOOOOOK..",
+        "..KOOOKOOOKOOOK.",
+        "..KOOOOOOOOOOOK.",
+        "..KDOOOOOOOOODK.",
+        ".KKKKKWWWWKKKK..",
+        "KRRRRKWWWWKOOOK.",
+        "KRYYRKWWWWKOOOK.",
+        "KRRRRKWWWWKKKK..",
+        "KMMMMKWWWWK.....",
+        ".KKKK.KWWK......",
+        "....KKOOKKOOK...",
+        "...KDOOK..KDK...",
+        "...KKKK....KK..."
+      ],
+
+      // 主角：橘貓外送員（跑步第 2 幀）
+      cat_run2: [
+        ".....KK....KK...",
+        "....KOOK..KOOK..",
+        "....KOOOKKOOOK..",
+        "....KOOOOOOOOOK.",
+        "...KOOOKOOOKOOOK",
+        "...KOOOOOOOOOOOK",
+        "...KDOOOOOOOOODK",
+        ".KKKKKWWWWKKKK..",
+        "KRRRRKWWWWKOOOK.",
+        "KRYYRKWWWWKOOOK.",
+        "KRRRRKWWWWKKKK..",
+        "KMMMMKWWWWK.....",
+        ".KKKK.KWWK......",
+        ".....KOOKKOOK...",
+        ".....KDK..KDOOK.",
+        "......KK...KKKK."
+      ],
+
+      // 主角：橘貓外送員（跳躍姿態）
+      cat_jump: [
+        "....KK....KK....",
+        "...KOOK..KOOK...",
+        "...KOOOKKOOOK...",
+        "...KOOOOOOOOOK..",
+        "..KOOOKOOOKOOOK.",
+        "..KOOOOOOOOOOOK.",
+        "..KDOOOOOOOOODK.",
+        ".KKKKKWWWWKKKK..",
+        "KRRRRKWWWWKOOOK.",
+        "KRYYRKWWWWKOOOK.",
+        "KRRRRKWWWWKKKK..",
+        "KMMMMKWWWWK.....",
+        ".KKKK.KWWK......",
+        "...KKOOK.KOOK...",
+        "..KDOOK...KDK...",
+        "..KKKK.....KK..."
+      ],
+
+      // 屋頂地板（16x16：頂部亮青色霓虹燈條 + 深灰色水泥磚塊）
+      roof_top: [
+        "CCCCCCCCCCCCCCCC",
+        "CWWWWCCCCCCCCWWC",
+        "BBBBBBBBBBBBBBBB",
+        "KKKKKKKKKKKKKKKK",
+        "GGGGGGGKGGGGGGGG",
+        "GSSSSSSKGSSSSSSG",
+        "GSSSSSSKGSSSSSSG",
+        "GSSSSSSKGSSSSSSG",
+        "EEEEEEEKEEEEEEEE",
+        "KKKKKKKKKKKKKKKK",
+        "GGGKGSSSSSSKGSSG",
+        "SSSKGSSSSSSKGSSG",
+        "SSSKGSSSSSSKGSSG",
+        "SSSKGSSSSSSKGSSG",
+        "EEEKEEEEEEEEKEEE",
+        "KKKKKKKKKKKKKKKK"
+      ],
+
+      // 屋頂下層建築牆體（16x16：純深灰色水泥屋頂磚塊）
+      roof_body: [
+        "GGGGGGGKGGGGGGGG",
+        "GSSSSSSKGSSSSSSG",
+        "GSSSSSSKGSSSSSSG",
+        "EEEEEEEKEEEEEEEE",
+        "KKKKKKKKKKKKKKKK",
+        "GGGKGSSSSSSKGSSG",
+        "SSSKGSSSSSSKGSSG",
+        "SSSKGSSSSSSKGSSG",
+        "EEEKEEEEEEEEKEEE",
+        "KKKKKKKKKKKKKKKK",
+        "GGGGGGGKGGGGGGGG",
+        "GSSSSSSKGSSSSSSG",
+        "GSSSSSSKGSSSSSSG",
+        "EEEEEEEKEEEEEEEE",
+        "KKKKKKKKKKKKKKKK",
+        "SSSSSSSSSSSSSSSS"
+      ],
+
+      // 補給箱：發光的黃色閃電箱 (16x16，頂撞或重砸後會彈出黃金小魚乾)
+      supply_box: [
+        ".KKKKKKKKKKKKKK.",
+        "KYYYYYYYYYYYYYYK",
+        "KYWYYYYYYYYYYWYK",
+        "KYYYYYYKKKYYYYYK",
+        "KYYYYYKYYKYYYYYK",
+        "KYYYYKYYKYYYYYYK",
+        "KYYYKYYYYKKYYYYK",
+        "KYYYKYYYYYKYYYYK",
+        "KYYYYKKKKYYKYYYK",
+        "KYYYYYYKYYKYYYYK",
+        "KYYYYYKYYKYYYYYK",
+        "KYYYYYKKKYYYYYYK",
+        "KYWYYYYYYYYYYWYK",
+        "KAAAAAAAAAAAAAAK",
+        ".KKKKKKKKKKKKKK.",
+        "................"
+      ],
+
+      // 補給箱（已使用後的暗灰鐵箱 16x16）
+      supply_box_used: [
+        ".KKKKKKKKKKKKKK.",
+        "KGGGGGGGGGGGGGGK",
+        "KGSGGGGGGGGGGSGK",
+        "KGSSSSSSSSSSSSGK",
+        "KGSSSSSSSSSSSSGK",
+        "KGSSSSKKKKSSSSGK",
+        "KGSSSSKSSKSSSSGK",
+        "KGSSSSKSSKSSSSGK",
+        "KGSSSSKKKKSSSSGK",
+        "KGSSSSSSSSSSSSGK",
+        "KGSSSSSSSSSSSSGK",
+        "KGSSSSSSSSSSSSGK",
+        "KGSGGGGGGGGGGSGK",
+        "KEEEEEEEEEEEEEEK",
+        ".KKKKKKKKKKKKKK.",
+        "................"
+      ],
+
+      // 黃金小魚乾（魚頭、魚鰭、魚尾分明 16x16）
+      fish_gold: [
+        "................",
+        "................",
+        ".......KKK......",
+        ".....KKYYYKK....",
+        "....KYYYYYYYK...",
+        ".KK.KYYKYYYYYK..",
+        "KYYKKYYYYYYYYYK.",
+        "KYYYYYYYYYYYYYYK",
+        "KYYYYYYYYYYYYYYK",
+        "KYYKKYYYYYYYYYK.",
+        ".KK.KYYYYYYYYK..",
+        "....KYYYYYYYK...",
+        ".....KKYYYKK....",
+        ".......KKK......",
+        "................",
+        "................"
+      ],
+
+      // 敵人：偷吃老鼠（向左行走第 1 幀，粉紅耳朵與長尾巴 16x16）
+      rat_walk1: [
+        "................",
+        "................",
+        "................",
+        "....KKK.........",
+        "...KPPPK........",
+        "...KPWPK........",
+        "..KNNNNNK.......",
+        ".KPKNNNNNKK.....",
+        "KPPKNNNNNNNKK...",
+        ".KKNNNNNNNNNNK..",
+        "..KNNNNNNNNNNNK.",
+        "..KNNNNNNNNNNNNK",
+        "...KKKKKKKKKKKKK",
+        "....KK....KK....",
+        "...KK......KK...",
+        "................"
+      ],
+
+      // 敵人：偷吃老鼠（向左行走第 2 幀，尾巴上揚與邁步 16x16）
+      rat_walk2: [
+        "................",
+        "................",
+        "................",
+        "....KKK.......KK",
+        "...KPPPK.....KPK",
+        "...KPWPK....KPK.",
+        "..KNNNNNK..KPK..",
+        ".KPKNNNNNKKPK...",
+        "KPPKNNNNNNNK....",
+        ".KKNNNNNNNNNK...",
+        "..KNNNNNNNNNNK..",
+        "..KNNNNNNNNNNNK.",
+        "...KKKKKKKKKKKK.",
+        ".....KK..KK.....",
+        "......KKKK......",
+        "................"
+      ],
+
+      // 終點物件 1：揮手的賽博客人（第 1 幀 - 手臂舉高揮舞 16x16）
+      customer1: [
+        ".....KKKKKK.....",
+        "....KVVVVVVK....",
+        "....KTTTTTTK....",
+        "....KTKTTKTK....",
+        "....KTTTTTTK....",
+        ".KK..KKKKKK.....",
+        "KTTKKVVVVVVKK...",
+        ".KKKVVVWWVVVKK..",
+        "...KVVVWWVVVKTTK",
+        "...KVVVVVVVVK.KK",
+        "....KKKKKKKK....",
+        "....KHHHHHHK....",
+        "....KHHKKHHK....",
+        "....KHHKKHHK....",
+        "...KKKK..KKKK...",
+        "................"
+      ],
+
+      // 終點物件 1：揮手的賽博客人（第 2 幀 - 手臂內擺揮舞 16x16）
+      customer2: [
+        ".....KKKKKK.....",
+        "....KVVVVVVK....",
+        "....KTTTTTTK....",
+        "....KTKTTKTK....",
+        "....KTTTTTTK....",
+        ".....KKKKKK..KK.",
+        "..KKVVVVVVKKKTTK",
+        ".KKVVVVWWVVVKKK.",
+        "KTTKVVVWWVVVK...",
+        ".KK.KVVVVVVVK...",
+        "....KKKKKKKK....",
+        "....KHHHHHHK....",
+        "....KHHKKHHK....",
+        "....KHHKKHHK....",
+        "...KKKK..KKKK...",
+        "................"
+      ],
+
+      // 終點物件 2：發光的賽博拉麵招牌/旗幟 (16x16)
+      ramen_flag: [
+        ".KKKKKKKKKKKKKK.",
+        "KCCCCCCCCCCCCCCK",
+        "KCWWWWWWWWWWWWCK",
+        "KCWWRRRRRRRRWWCK",
+        "KCWRYYYYYYYYRWCK",
+        "KCWRYRRRRRRYRWCK",
+        "KCWRYRWWWWYRRWCK",
+        "KCWRYRRRRRRYRWCK",
+        "KCWRYYYYYYYYRWCK",
+        "KCWWRRRRRRRRWWCK",
+        "KCWWWWWWWWWWWWCK",
+        "KCCCCCCCCCCCCCCK",
+        ".KKKKKKCCKKKKKK.",
+        "......KCCK......",
+        "......KCCK......",
+        "......KKKK......"
+      ],
+
+      // HUD 紅心圖示 (16x16)
+      heart: [
+        "................",
+        "................",
+        "...KKK....KKK...",
+        "..KRRRK..KRRRK..",
+        ".KRWWWRKKRRRRRK.",
+        ".KRWWRRRRRRRRRK.",
+        ".KRRRRRRRRRRRRK.",
+        ".KRRRRRRRRRRRRK.",
+        "..KRRRRRRRRRRK..",
+        "...KRRRRRRRRK...",
+        "....KRRRRRRK....",
+        ".....KRRRRK.....",
+        "......KRRK......",
+        ".......KK.......",
+        "................",
+        "................"
+      ]
+    };
+
+    // 預渲染所有 16x16 精靈圖至離屏 Canvas（包含正向與水平翻轉版本）
+    const spriteCache = {};
+
+    function preRenderSprites() {
+      for (const [name, matrix] of Object.entries(SPRITES)) {
+        if (matrix.length !== 16) {
+          console.warn(`Sprite ${name} 高度非 16 像素`);
+        }
+
+        const normalCanvas = document.createElement('canvas');
+        normalCanvas.width = 16;
+        normalCanvas.height = 16;
+        const nCtx = normalCanvas.getContext('2d');
+
+        const flipCanvas = document.createElement('canvas');
+        flipCanvas.width = 16;
+        flipCanvas.height = 16;
+        const fCtx = flipCanvas.getContext('2d');
+
+        for (let y = 0; y < 16; y++) {
+          const row = matrix[y];
+          for (let x = 0; x < 16; x++) {
+            const ch = row[x];
+            const color = PALETTE[ch];
+            if (color) {
+              nCtx.fillStyle = color;
+              nCtx.fillRect(x, y, 1, 1);
+
+              fCtx.fillStyle = color;
+              fCtx.fillRect(15 - x, y, 1, 1);
+            }
+          }
+        }
+
+        spriteCache[name] = {
+          normal: normalCanvas,
+          flipped: flipCanvas
+        };
+      }
+    }
+
+    function drawSprite(name, x, y, flipX = false) {
+      const entry = spriteCache[name];
+      if (!entry) return;
+      const drawX = Math.round(x);
+      const drawY = Math.round(y);
+      ctx.drawImage(flipX ? entry.flipped : entry.normal, drawX, drawY);
+    }
+
+    // ============================================================================
+    // 2. Web Audio API 8-BIT 復古晶片音效合成器（無外部音檔依賴）
+    // ============================================================================
+    class RetroAudio {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+
+      init() {
+        try {
+          if (!this.ctx) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (AudioCtx) {
+              this.ctx = new AudioCtx();
+            }
+          }
+          if (this.ctx && this.ctx.state === 'suspended') {
+            this.ctx.resume();
+          }
+        } catch (err) {
+          // 忽略瀏覽器音訊自動播放限制
+        }
+      }
+
+      playTone(freqStart, freqEnd, duration, type = 'square', gainVal = 0.08, delay = 0) {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime + delay;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = type;
+        osc.frequency.setValueAtTime(freqStart, now);
+        if (freqEnd !== freqStart) {
+          osc.frequency.exponentialRampToValueAtTime(Math.max(20, freqEnd), now + duration);
+        }
+
+        gain.gain.setValueAtTime(gainVal, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + duration);
+      }
+
+      jump() {
+        this.playTone(190, 560, 0.14, 'square', 0.07);
+      }
+
+      poundCharge() {
+        this.playTone(520, 780, 0.09, 'square', 0.06);
+      }
+
+      poundSlam() {
+        this.playTone(220, 55, 0.18, 'sawtooth', 0.11);
+      }
+
+      boxHit() {
+        this.playTone(320, 640, 0.08, 'square', 0.08);
+        this.playTone(880, 1320, 0.16, 'triangle', 0.09, 0.06);
+      }
+
+      fish() {
+        this.playTone(987, 987, 0.07, 'square', 0.07, 0);
+        this.playTone(1318, 1318, 0.16, 'square', 0.07, 0.06);
+      }
+
+      stomp() {
+        this.playTone(260, 110, 0.10, 'square', 0.09);
+        this.playTone(440, 620, 0.09, 'triangle', 0.07, 0.05);
+      }
+
+      hurt() {
+        this.playTone(320, 90, 0.25, 'sawtooth', 0.09);
+      }
+
+      win() {
+        const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
+        const times = [0, 0.1, 0.2, 0.3, 0.45, 0.58];
+        notes.forEach((n, idx) => {
+          this.playTone(n, n, 0.14, 'square', 0.08, times[idx]);
+        });
+      }
+
+      gameOver() {
+        const notes = [392.00, 349.23, 329.63, 261.63];
+        notes.forEach((n, idx) => {
+          this.playTone(n, n * 0.96, 0.22, 'triangle', 0.09, idx * 0.2);
+        });
+      }
+    }
+
+    const sfx = new RetroAudio();
+
+    // ============================================================================
+    // 4. 遊戲狀態與物理參數設定
+    // ============================================================================
+    const PHYSICS = {
+      GRAVITY: 0.42,            // 基礎重力
+      HOLD_JUMP_GRAVITY: 0.24,  // 長按空白鍵上升時的低重力（實現明顯大跳高度）
+      FALL_GRAVITY: 0.62,       // 下落加速重力（紅白機爽快手感）
+      MAX_FALL_SPEED: 6.2,      // 最大終端下落速度
+      ACCEL: 0.24,              // 地面水平加速度
+      AIR_ACCEL: 0.16,          // 空中水平加速度
+      FRICTION: 0.82,           // 地面摩擦減速係數
+      AIR_FRICTION: 0.92,       // 空中阻力係數
+      MAX_SPEED_X: 2.35,        // 最大水平移動速度
+      JUMP_VELOCITY: -5.9,      // 起跳初速度（搭配長按低重力可達約 75px 高大跳）
+      JUMP_CUT_MULT: 0.50,      // 短按放開跳躍鍵時的速度衰減（實現短按小跳 約 35px）
+      BOUNCE_VELOCITY: -4.4,    // 踩扁老鼠時的向上反彈力
+      POUND_CHARGE_FRAMES: 10,  // 空中蓄力重砸滯空蓄力幀數
+      POUND_SLAM_SPEED: 7.4,    // 蓄力後高速垂直下砸速度
+      COYOTE_FRAMES: 6,         // 土狼時間（離開平台邊緣 6 幀內仍可跳躍）
+      JUMP_BUFFER_FRAMES: 6     // 跳躍預輸入緩衝
+    };
+
+    const keys = {
+      left: false,
+      right: false,
+      jump: false,
+      jumpJustPressed: false,
+      down: false,
+      downJustPressed: false,
+      ignoreJumpUntilRelease: false // 開局按下空白鍵後，避免放開前觸發誤跳
+    };
+
+    let gameState = 'TITLE'; // 'TITLE' | 'STAGE_INTRO' | 'PLAYING' | 'GAMEOVER' | 'VICTORY'
+    let showRulesModal = false; // 按 H 鍵隨時開啟/關閉完整規則說明視窗（同時暫停遊戲）
+    let frameCount = 0;
+
+    function updateStageButtonUI() {
+      const stageBtn = document.getElementById('stageBtn');
+      const st = STAGES[currentStageIndex];
+      if (stageBtn && st) {
+        stageBtn.textContent = `關卡: ${st.id}${st.diffName}`;
+        stageBtn.style.color = st.diffColor;
+      }
+    }
+
+    // 進入關卡劇情前導畫面
+    function enterStageIntro(stageIdx, resetScore = false, consumeSpaceKey = true) {
+      currentStageIndex = (stageIdx + STAGES.length) % STAGES.length;
+      updateStageButtonUI();
+      initLevel(resetScore);
+      gameState = 'STAGE_INTRO';
+      keys.left = false;
+      keys.right = false;
+      keys.jump = false;
+      keys.jumpJustPressed = false;
+      keys.down = false;
+      keys.downJustPressed = false;
+      keys.ignoreJumpUntilRelease = consumeSpaceKey;
+      sfx.init();
+      sfx.fish();
+    }
+
+    // 從劇情前導畫面正式開始遊玩當前關卡
+    function beginStagePlay(consumeSpaceKey = true) {
+      gameState = 'PLAYING';
+      lastTimerTimestamp = performance.now();
+      keys.left = false;
+      keys.right = false;
+      keys.jump = false;
+      keys.jumpJustPressed = false;
+      keys.down = false;
+      keys.downJustPressed = false;
+      keys.ignoreJumpUntilRelease = consumeSpaceKey;
+      sfx.init();
+      sfx.jump();
+    }
+
+    // 統一開始遊戲函式（空白鍵、Enter 或點擊畫面皆可觸發）
+    function startGameFromTitle(consumeSpaceKey = true) {
+      if (gameState !== 'TITLE') return;
+      enterStageIntro(currentStageIndex, true, consumeSpaceKey);
+    }
+
+    // 玩家數據與 HUD 狀態
+    let score = 0;
+    let fishCount = 0;
+    let timeLeft = 120;
+    let lives = 3;
+    let lastTimerTimestamp = 0;
+
+    // 攝影機與特效
+    let cameraX = 0;
+    let screenShake = 0;
+
+    // 地圖與實體容器
+    let tileGrid = [];
+    let supplyBoxes = [];
+    let fishes = [];
+    let rats = [];
+    let particles = [];
+    let floatingTexts = [];
+    let goalZone = { x: 0, y: 0, w: 32, h: 32, flagX: 0, flagY: 0, custX: 0, custY: 0 };
+
+    // 主角橘貓物件（碰撞箱略小於 16x16，確保邊緣跳躍不卡牆）
+    const player = {
+      x: 24,
+      y: 140,
+      vx: 0,
+      vy: 0,
+      w: 12,
+      h: 15,
+      offsetX: -2,
+      offsetY: -1,
+      facingRight: true,
+      grounded: false,
+      coyoteTimer: 0,
+      jumpBufferTimer: 0,
+      invulnTimer: 0,
+      animTimer: 0,
+      animFrame: 0,
+      poundState: 'NONE', // 'NONE' | 'CHARGING' | 'SLAMMING'
+      poundTimer: 0,
+      spawnX: 24,
+      spawnY: 140
+    };
+
+    // 遠景星空與建築剪影預生成
+    const stars = [];
+    for (let i = 0; i < 48; i++) {
+      stars.push({
+        x: (i * 53 + 17) % 256,
+        y: (i * 29 + 11) % 130,
+        size: i % 5 === 0 ? 2 : 1,
+        blinkSpeed: 0.04 + (i % 4) * 0.02
+      });
+    }
+
+    const skylineFar = [];
+    for (let x = 0; x < 640; x += 24) {
+      const h = 45 + ((x * 13) % 55);
+      skylineFar.push({ x, w: 22, h, litWindow: (x / 24) % 2 === 0 });
+    }
+
+    const skylineNear = [];
+    for (let x = 0; x < 800; x += 32) {
+      const h = 35 + ((x * 19) % 68);
+      skylineNear.push({ x, w: 28, h, neonColor: (x / 32) % 3 === 0 ? '#00f5d4' : ((x / 32) % 3 === 1 ? '#ff595e' : '#ffbe0b') });
+    }
+
+    // ============================================================================
+    // 5. 關卡初始化與重置
+    // ============================================================================
+    function initLevel(fullReset = true) {
+      const stage = STAGES[currentStageIndex];
+      LEVEL_BLUEPRINT = stage.blueprint;
+      LEVEL_ROWS = LEVEL_BLUEPRINT.length;
+      LEVEL_COLS = LEVEL_BLUEPRINT[0].length;
+
+      if (fullReset) {
+        score = 0;
+        fishCount = 0;
+        lives = 3;
+      }
+      timeLeft = stage.timeLimit;
+      cameraX = 0;
+      screenShake = 0;
+
+      tileGrid = Array.from({ length: LEVEL_ROWS }, () => Array(LEVEL_COLS).fill('.'));
+      supplyBoxes = [];
+      fishes = [];
+      rats = [];
+      particles = [];
+      floatingTexts = [];
+
+      for (let r = 0; r < LEVEL_ROWS; r++) {
+        const rowStr = LEVEL_BLUEPRINT[r];
+        for (let c = 0; c < LEVEL_COLS; c++) {
+          const ch = rowStr[c];
+          const wx = c * TILE_SIZE;
+          const wy = r * TILE_SIZE;
+
+          if (ch === '#' || ch === 'B') {
+            tileGrid[r][c] = ch;
+          } else if (ch === '?') {
+            tileGrid[r][c] = '?';
+            supplyBoxes.push({
+              col: c,
+              row: r,
+              x: wx,
+              y: wy,
+              used: false,
+              bumpOffset: 0
+            });
+          } else if (ch === 'F') {
+            fishes.push({
+              x: wx,
+              y: wy,
+              baseY: wy,
+              vy: 0,
+              popping: false,
+              collected: false,
+              phase: c * 0.6
+            });
+          } else if (ch === 'R') {
+            rats.push({
+              x: wx + 1,
+              y: wy + 2,
+              w: 14,
+              h: 14,
+              vx: -stage.ratSpeed,
+              speed: stage.ratSpeed,
+              vy: 0,
+              alive: true,
+              squishTimer: 0,
+              animTimer: 0
+            });
+          } else if (ch === 'G') {
+            goalZone = {
+              x: wx - 8,
+              y: wy - 16,
+              w: 36,
+              h: 32,
+              flagX: wx - 4,
+              flagY: wy - 16,
+              custX: wx + 12,
+              custY: wy
+            };
+          }
+        }
+      }
+
+      respawnPlayer(true);
+    }
+
+    function respawnPlayer(isInitial = false) {
+      player.x = isInitial ? 24 : Math.max(24, Math.floor(cameraX / TILE_SIZE) * TILE_SIZE + 24);
+      // 尋找安全落腳高度，避免重生在深淵上方
+      let safeCol = Math.floor((player.x + player.w / 2) / TILE_SIZE);
+      let foundSolid = false;
+      for (let offset = 0; offset < 12; offset++) {
+        const checkCol = Math.max(1, Math.min(LEVEL_COLS - 2, safeCol - offset));
+        for (let r = 0; r < LEVEL_ROWS; r++) {
+          if (isSolidTile(tileGrid[r][checkCol])) {
+            player.x = checkCol * TILE_SIZE + 2;
+            player.y = (r - 1) * TILE_SIZE;
+            foundSolid = true;
+            break;
+          }
+        }
+        if (foundSolid) break;
+      }
+      if (!foundSolid) {
+        player.x = 24;
+        player.y = 144;
+      }
+
+      player.vx = 0;
+      player.vy = 0;
+      player.facingRight = true;
+      player.grounded = false;
+      player.coyoteTimer = 0;
+      player.jumpBufferTimer = 0;
+      player.poundState = 'NONE';
+      player.poundTimer = 0;
+      player.invulnTimer = isInitial ? 0 : 90;
+    }
+
+    // ============================================================================
+    // 6. 粒子與浮動得分文字特效
+    // ============================================================================
+    function spawnParticles(x, y, color, count = 8) {
+      for (let i = 0; i < count; i++) {
+        const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.4;
+        const speed = 0.8 + Math.random() * 1.8;
+        particles.push({
+          x,
+          y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 1.2,
+          life: 18 + Math.floor(Math.random() * 10),
+          color,
+          size: Math.random() > 0.5 ? 2 : 1
+        });
+      }
+    }
+
+    function spawnFloatingText(x, y, text, color = '#ffd60a') {
+      floatingTexts.push({
+        x,
+        y,
+        text,
+        color,
+        life: 36
+      });
+    }
+
+    // ============================================================================
+    // 7. X 軸與 Y 軸分離式 AABB 碰撞檢測
+    // ============================================================================
+    function isSolidTile(ch) {
+      return ch === '#' || ch === 'B' || ch === '?' || ch === 'U';
+    }
+
+    function aabbOverlap(a, b) {
+      return (
+        a.x < b.x + b.w &&
+        a.x + a.w > b.x &&
+        a.y < b.y + b.h &&
+        a.y + a.h > b.y
+      );
+    }
+
+    function resolveMapCollisionX(entity) {
+      const leftCol = Math.floor(entity.x / TILE_SIZE);
+      const rightCol = Math.floor((entity.x + entity.w - 0.01) / TILE_SIZE);
+      const topRow = Math.floor(entity.y / TILE_SIZE);
+      const bottomRow = Math.floor((entity.y + entity.h - 0.01) / TILE_SIZE);
+
+      for (let r = topRow; r <= bottomRow; r++) {
+        if (r < 0 || r >= LEVEL_ROWS) continue;
+        for (let c = leftCol; c <= rightCol; c++) {
+          if (c < 0 || c >= LEVEL_COLS) continue;
+          if (isSolidTile(tileGrid[r][c])) {
+            if (entity.vx > 0) {
+              entity.x = c * TILE_SIZE - entity.w;
+              entity.vx = 0;
+              return true;
+            } else if (entity.vx < 0) {
+              entity.x = (c + 1) * TILE_SIZE;
+              entity.vx = 0;
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    }
+
+    function resolveMapCollisionY(entity, isPlayer = false) {
+      const leftCol = Math.floor(entity.x / TILE_SIZE);
+      const rightCol = Math.floor((entity.x + entity.w - 0.01) / TILE_SIZE);
+      const topRow = Math.floor(entity.y / TILE_SIZE);
+      const bottomRow = Math.floor((entity.y + entity.h - 0.01) / TILE_SIZE);
+
+      if (isPlayer) {
+        entity.grounded = false;
+      }
+
+      for (let r = topRow; r <= bottomRow; r++) {
+        if (r < 0 || r >= LEVEL_ROWS) continue;
+        for (let c = leftCol; c <= rightCol; c++) {
+          if (c < 0 || c >= LEVEL_COLS) continue;
+          const tile = tileGrid[r][c];
+          if (isSolidTile(tile)) {
+            if (entity.vy > 0) {
+              const wasSlamming = isPlayer && entity.poundState === 'SLAMMING';
+              entity.y = r * TILE_SIZE - entity.h;
+              entity.vy = 0;
+              if (isPlayer) {
+                entity.grounded = true;
+                if (wasSlamming) {
+                  executeGroundPoundImpact(entity, r);
+                }
+              }
+              return 'BOTTOM';
+            } else if (entity.vy < 0) {
+              entity.y = (r + 1) * TILE_SIZE;
+              entity.vy = 0;
+              if (isPlayer && tile === '?') {
+                triggerSupplyBox(c, r);
+              }
+              return 'TOP';
+            }
+          }
+        }
+      }
+      return null;
+    }
+
+    // 頂撞黃色閃電補給箱：變為已使用鐵箱並彈出黃金小魚乾
+    function triggerSupplyBox(col, row) {
+      const box = supplyBoxes.find(b => b.col === col && b.row === row);
+      if (!box || box.used) return;
+
+      box.used = true;
+      box.bumpOffset = -5;
+      tileGrid[row][col] = 'U';
+
+      score += 50;
+      fishCount += 1;
+      sfx.boxHit();
+      spawnParticles(box.x + 8, box.y + 4, '#ffd60a', 10);
+      spawnFloatingText(box.x, box.y - 10, '+50', '#ffd60a');
+
+      // 彈出一條會跳起的黃金小魚乾視覺動畫（分數與數量已自動計入）
+      fishes.push({
+        x: box.x,
+        y: box.y - 12,
+        baseY: box.y - 16,
+        vy: -2.6,
+        popping: true,
+        popLife: 24,
+        collected: false,
+        phase: 0
+      });
+    }
+
+    // 執行空中蓄力重砸落地衝擊：打開腳下與鄰近地面的補給箱，並震飛附近老鼠
+    function executeGroundPoundImpact(entity, groundRow) {
+      entity.poundState = 'NONE';
+      entity.poundTimer = 0;
+      screenShake = 8;
+      sfx.poundSlam();
+
+      const impactX = entity.x + entity.w / 2;
+      const impactY = entity.y + entity.h;
+      spawnParticles(impactX, impactY, '#00f5d4', 12);
+      spawnParticles(impactX, impactY, '#ffd60a', 10);
+
+      // 檢查腳下左右範圍內的地上補給箱並砸開
+      const centerCol = Math.floor(impactX / TILE_SIZE);
+      for (let dc = -1; dc <= 1; dc++) {
+        const checkCol = centerCol + dc;
+        if (checkCol >= 0 && checkCol < LEVEL_COLS && groundRow >= 0 && groundRow < LEVEL_ROWS) {
+          if (tileGrid[groundRow][checkCol] === '?') {
+            triggerSupplyBox(checkCol, groundRow);
+          }
+        }
+      }
+
+      // 衝擊波消滅鄰近的偷吃老鼠
+      for (const rat of rats) {
+        if (!rat.alive) continue;
+        const dx = Math.abs((rat.x + rat.w / 2) - impactX);
+        const dy = Math.abs((rat.y + rat.h / 2) - impactY);
+        if (dx <= 26 && dy <= 18) {
+          rat.alive = false;
+          rat.squishTimer = 18;
+          score += 100;
+          spawnParticles(rat.x + 7, rat.y + 7, '#ff75a0', 10);
+          spawnFloatingText(rat.x, rat.y - 8, '+100', '#00f5d4');
+        }
+      }
+    }
+
+    // ============================================================================
+    // 9. 遊戲主邏輯更新 (Fixed Timestep 60 FPS)
+    // ============================================================================
+    function updateGame(now) {
+      frameCount++;
+
+      // 粒子與浮動文字更新
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.14;
+        p.life--;
+        if (p.life <= 0) particles.splice(i, 1);
+      }
+
+      for (let i = floatingTexts.length - 1; i >= 0; i--) {
+        const ft = floatingTexts[i];
+        ft.y -= 0.45;
+        ft.life--;
+        if (ft.life <= 0) floatingTexts.splice(i, 1);
+      }
+
+      if (screenShake > 0) screenShake--;
+
+      if (gameState !== 'PLAYING' || showRulesModal) return;
+
+      // 120 秒倒數計時器
+      if (now - lastTimerTimestamp >= 1000) {
+        const elapsedSec = Math.floor((now - lastTimerTimestamp) / 1000);
+        timeLeft = Math.max(0, timeLeft - elapsedSec);
+        lastTimerTimestamp += elapsedSec * 1000;
+
+        if (timeLeft === 0) {
+          lives = 0;
+          gameState = 'GAMEOVER';
+          sfx.gameOver();
+          return;
+        }
+      }
+
+      // 無敵計時器
+      if (player.invulnTimer > 0) player.invulnTimer--;
+
+      // 觸發空中蓄力重砸（在空中按下 ↓ / S / 手機 ▼重砸 鍵）
+      if (keys.downJustPressed) {
+        keys.downJustPressed = false;
+        if (!player.grounded && player.poundState === 'NONE') {
+          player.poundState = 'CHARGING';
+          player.poundTimer = PHYSICS.POUND_CHARGE_FRAMES;
+          player.vx = 0;
+          player.vy = -1.2;
+          sfx.poundCharge();
+          spawnParticles(player.x + 6, player.y + 8, '#ffd60a', 6);
+        }
+      }
+
+      if (player.poundState === 'CHARGING') {
+        player.vx = 0;
+        player.vy = 0;
+        player.poundTimer--;
+        if (player.poundTimer <= 0) {
+          player.poundState = 'SLAMMING';
+          player.vy = PHYSICS.POUND_SLAM_SPEED;
+        }
+      } else if (player.poundState === 'SLAMMING') {
+        player.vx = 0;
+        player.vy = PHYSICS.POUND_SLAM_SPEED;
+        if (frameCount % 2 === 0) {
+          spawnParticles(player.x + 6, player.y, '#00f5d4', 1);
+        }
+      } else {
+        // 正常水平加速度與慣性摩擦
+        const accel = player.grounded ? PHYSICS.ACCEL : PHYSICS.AIR_ACCEL;
+        const friction = player.grounded ? PHYSICS.FRICTION : PHYSICS.AIR_FRICTION;
+
+        if (keys.left && !keys.right) {
+          player.vx -= accel;
+          player.facingRight = false;
+        } else if (keys.right && !keys.left) {
+          player.vx += accel;
+          player.facingRight = true;
+        } else {
+          player.vx *= friction;
+          if (Math.abs(player.vx) < 0.06) player.vx = 0;
+        }
+
+        if (player.vx > PHYSICS.MAX_SPEED_X) player.vx = PHYSICS.MAX_SPEED_X;
+        if (player.vx < -PHYSICS.MAX_SPEED_X) player.vx = -PHYSICS.MAX_SPEED_X;
+
+        // 跳躍緩衝與土狼時間
+        if (keys.jumpJustPressed) {
+          player.jumpBufferTimer = PHYSICS.JUMP_BUFFER_FRAMES;
+          keys.jumpJustPressed = false;
+        } else if (player.jumpBufferTimer > 0) {
+          player.jumpBufferTimer--;
+        }
+
+        if (player.grounded) {
+          player.coyoteTimer = PHYSICS.COYOTE_FRAMES;
+        } else if (player.coyoteTimer > 0) {
+          player.coyoteTimer--;
+        }
+
+        // 執行起跳
+        if (player.jumpBufferTimer > 0 && player.coyoteTimer > 0) {
+          player.vy = PHYSICS.JUMP_VELOCITY;
+          player.grounded = false;
+          player.coyoteTimer = 0;
+          player.jumpBufferTimer = 0;
+          sfx.jump();
+        }
+
+        // 短按放開跳躍鍵時截斷上升速度（實現短按小跳、長按大跳）
+        if (!keys.jump && player.vy < -1.5) {
+          player.vy *= PHYSICS.JUMP_CUT_MULT;
+        }
+
+        // 垂直重力：上升且持續按住空白鍵時套用低重力，讓長按能跳得明顯更高
+        let grav = PHYSICS.GRAVITY;
+        if (player.vy > 0) {
+          grav = PHYSICS.FALL_GRAVITY;
+        } else if (keys.jump && player.vy < 0) {
+          grav = PHYSICS.HOLD_JUMP_GRAVITY;
+        }
+        player.vy = Math.min(PHYSICS.MAX_FALL_SPEED, player.vy + grav);
+      }
+
+      // X 軸移動與分離式碰撞
+      player.x += player.vx;
+      if (player.x < 0) {
+        player.x = 0;
+        player.vx = 0;
+      }
+      if (player.x + player.w > LEVEL_COLS * TILE_SIZE) {
+        player.x = LEVEL_COLS * TILE_SIZE - player.w;
+        player.vx = 0;
+      }
+      resolveMapCollisionX(player);
+
+      // Y 軸移動與分離式碰撞
+      player.y += player.vy;
+      resolveMapCollisionY(player, true);
+
+      // 掉落深淵判定
+      if (player.y > CANVAS_HEIGHT + 8) {
+        damagePlayer(true);
+        return;
+      }
+
+      // 貓咪跑步幀動畫
+      if (player.grounded && Math.abs(player.vx) > 0.25) {
+        player.animTimer += Math.abs(player.vx) * 0.18;
+        if (player.animTimer >= 1) {
+          player.animTimer = 0;
+          player.animFrame = (player.animFrame + 1) % 2;
+        }
+      } else {
+        player.animFrame = 0;
+        player.animTimer = 0;
+      }
+
+      // 更新補給箱被頂撞後的彈跳回彈動畫
+      for (const box of supplyBoxes) {
+        if (box.bumpOffset < 0) {
+          box.bumpOffset = Math.min(0, box.bumpOffset + 0.6);
+        }
+      }
+
+      // 更新黃金小魚乾（漂浮與碰撞拾取）
+      for (let i = fishes.length - 1; i >= 0; i--) {
+        const f = fishes[i];
+        if (f.collected) continue;
+
+        if (f.popping) {
+          f.y += f.vy;
+          f.vy += 0.16;
+          f.popLife--;
+          if (f.popLife <= 0) {
+            f.collected = true;
+          }
+          continue;
+        }
+
+        f.y = f.baseY + Math.sin(frameCount * 0.1 + f.phase) * 2;
+        const fishBox = { x: f.x + 2, y: f.y + 3, w: 12, h: 10 };
+        if (aabbOverlap(player, fishBox)) {
+          f.collected = true;
+          score += 50;
+          fishCount += 1;
+          sfx.fish();
+          spawnParticles(f.x + 8, f.y + 8, '#ffd60a', 7);
+          spawnFloatingText(f.x, f.y - 4, '+50', '#ffd60a');
+        }
+      }
+
+      // 更新偷吃老鼠巡邏與碰撞判定
+      for (const rat of rats) {
+        if (!rat.alive) {
+          if (rat.squishTimer > 0) rat.squishTimer--;
+          continue;
+        }
+
+        rat.animTimer++;
+        rat.vy = Math.min(PHYSICS.MAX_FALL_SPEED, rat.vy + PHYSICS.FALL_GRAVITY);
+
+        // 水平巡邏與屋頂邊緣懸崖偵測（防止老鼠自己走下深淵）
+        const nextX = rat.x + rat.vx;
+        const probeX = rat.vx < 0 ? nextX : nextX + rat.w;
+        const probeCol = Math.floor(probeX / TILE_SIZE);
+        const footRow = Math.floor((rat.y + rat.h + 2) / TILE_SIZE);
+
+        let edgeAhead = false;
+        if (probeCol < 0 || probeCol >= LEVEL_COLS) {
+          edgeAhead = true;
+        } else if (footRow < LEVEL_ROWS && !isSolidTile(tileGrid[footRow][probeCol])) {
+          edgeAhead = true;
+        }
+
+        if (edgeAhead) {
+          rat.vx = -rat.vx;
+        } else {
+          rat.x = nextX;
+          if (resolveMapCollisionX(rat)) {
+            const spd = rat.speed || 0.65;
+            rat.vx = (rat.x % TILE_SIZE === 0) ? spd : -spd;
+          }
+        }
+        // 與橘貓碰撞判定：重砸/從上方踩扁 vs 側面碰撞
+        if (aabbOverlap(player, rat)) {
+          const playerBottom = player.y + player.h;
+          const isStomping =
+            player.poundState === 'SLAMMING' ||
+            (player.vy > 0 && (playerBottom - player.vy) <= (rat.y + 7));
+
+          if (isStomping) {
+            rat.alive = false;
+            rat.squishTimer = 18;
+            if (player.poundState !== 'SLAMMING') {
+              player.vy = PHYSICS.BOUNCE_VELOCITY;
+              player.grounded = false;
+            }
+            score += 100;
+            sfx.stomp();
+            spawnParticles(rat.x + 7, rat.y + 7, '#ff75a0', 10);
+            spawnFloatingText(rat.x, rat.y - 6, '+100', '#00f5d4');
+          } else {
+            damagePlayer(false);
+          }
+        }
+      }
+
+      // 到達終點客人與拉麵旗幟判定
+      if (aabbOverlap(player, goalZone)) {
+        score += timeLeft * 5;
+        gameState = 'VICTORY';
+        sfx.win();
+        spawnParticles(goalZone.custX + 8, goalZone.custY, '#00f5d4', 18);
+        spawnParticles(goalZone.flagX + 8, goalZone.flagY + 8, '#ffd60a', 18);
+      }
+
+      // 攝影機平滑跟隨（保持貓咪在畫面偏左側 38% 處，方便預判前方屋頂跳躍）
+      const targetCamX = player.x - CANVAS_WIDTH * 0.38;
+      const maxCamX = LEVEL_COLS * TILE_SIZE - CANVAS_WIDTH;
+      cameraX += (Math.max(0, Math.min(maxCamX, targetCamX)) - cameraX) * 0.16;
+    }
+
+    function damagePlayer(fellInPit) {
+      if (!fellInPit && player.invulnTimer > 0) return;
+
+      lives -= 1;
+      screenShake = 10;
+      sfx.hurt();
+      spawnParticles(player.x + 6, player.y + 8, '#ff595e', 14);
+
+      if (lives <= 0) {
+        lives = 0;
+        gameState = 'GAMEOVER';
+        sfx.gameOver();
+      } else if (fellInPit) {
+        respawnPlayer(false);
+      } else {
+        player.invulnTimer = 90;
+        player.poundState = 'NONE';
+        player.vy = -3.4;
+        player.vx = player.facingRight ? -1.8 : 1.8;
+      }
+    }
+
+    // ============================================================================
+    // 10. 畫面渲染引擎 (256x240 精準像素對齊)
+    // ============================================================================
+    function drawBackground() {
+      // 依據當前關卡切換深藍/紫夜賽博夜空色調
+      const stage = STAGES[currentStageIndex];
+      ctx.fillStyle = stage ? stage.skyTop : '#141836';
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+      // 閃爍像素星星
+      for (const s of stars) {
+        const blink = Math.sin(frameCount * s.blinkSpeed + s.x);
+        ctx.fillStyle = blink > 0.3 ? '#ffffff' : (blink > -0.4 ? '#8d99ae' : '#2b3359');
+        ctx.fillRect(s.x, s.y, s.size, s.size);
+      }
+
+      // 復古像素月亮（右上角固定遠景）
+      const moonX = 204;
+      const moonY = 34;
+      ctx.fillStyle = '#ffd60a';
+      ctx.fillRect(moonX + 4, moonY, 12, 20);
+      ctx.fillRect(moonX + 2, moonY + 2, 16, 16);
+      ctx.fillRect(moonX, moonY + 4, 20, 12);
+      // 月球陰影咬合形成新月/滿月紋理
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(moonX + 12, moonY + 4, 4, 4);
+      ctx.fillRect(moonX + 6, moonY + 12, 3, 3);
+
+      // 遠景建築剪影（視差速度 0.15x）
+      const farOffset = Math.floor(cameraX * 0.15);
+      for (const b of skylineFar) {
+        const bx = Math.round(b.x - (farOffset % 320));
+        if (bx + b.w < 0 || bx > CANVAS_WIDTH) continue;
+        const by = CANVAS_HEIGHT - b.h;
+        ctx.fillStyle = '#1c2247';
+        ctx.fillRect(bx, by, b.w, b.h);
+        if (b.litWindow) {
+          ctx.fillStyle = '#364282';
+          for (let wy = by + 6; wy < CANVAS_HEIGHT - 12; wy += 10) {
+            ctx.fillRect(bx + 4, wy, 3, 4);
+            ctx.fillRect(bx + 13, wy, 3, 4);
+          }
+        }
+      }
+
+      // 中景賽博建築剪影（視差速度 0.35x）
+      const nearOffset = Math.floor(cameraX * 0.35);
+      for (const b of skylineNear) {
+        const bx = Math.round(b.x - (nearOffset % 384));
+        if (bx + b.w < 0 || bx > CANVAS_WIDTH) continue;
+        const by = CANVAS_HEIGHT - b.h;
+        ctx.fillStyle = '#0f1329';
+        ctx.fillRect(bx, by, b.w, b.h);
+        // 遠景大樓霓虹招牌小線條
+        ctx.fillStyle = b.neonColor;
+        ctx.fillRect(bx + 4, by + 4, b.w - 8, 2);
+      }
+    }
+
+    function drawLevel() {
+      const camX = Math.round(cameraX);
+      const startCol = Math.max(0, Math.floor(camX / TILE_SIZE));
+      const endCol = Math.min(LEVEL_COLS - 1, Math.ceil((camX + CANVAS_WIDTH) / TILE_SIZE));
+
+      for (let r = 0; r < LEVEL_ROWS; r++) {
+        for (let c = startCol; c <= endCol; c++) {
+          const tile = tileGrid[r][c];
+          const sx = c * TILE_SIZE - camX;
+          const sy = r * TILE_SIZE;
+
+          if (tile === '#') {
+            drawSprite('roof_top', sx, sy);
+          } else if (tile === 'B') {
+            drawSprite('roof_body', sx, sy);
+          } else if (tile === '?' || tile === 'U') {
+            const box = supplyBoxes.find(b => b.col === c && b.row === r);
+            const offset = box ? box.bumpOffset : 0;
+            drawSprite(tile === '?' ? 'supply_box' : 'supply_box_used', sx, sy + offset);
+          }
+        }
+      }
+
+      // 繪製漂浮黃金小魚乾
+      for (const f of fishes) {
+        if (f.collected) continue;
+        const sx = f.x - camX;
+        if (sx < -16 || sx > CANVAS_WIDTH + 16) continue;
+        drawSprite('fish_gold', sx, f.y);
+      }
+
+      // 繪製終點（揮手客人 + 發光拉麵招牌）
+      const flagSx = goalZone.flagX - camX;
+      const custSx = goalZone.custX - camX;
+      if (flagSx > -32 && flagSx < CANVAS_WIDTH + 32) {
+        drawSprite('ramen_flag', flagSx, goalZone.flagY);
+        const waveSprite = Math.floor(frameCount / 16) % 2 === 0 ? 'customer1' : 'customer2';
+        drawSprite(waveSprite, custSx, goalZone.custY, true);
+      }
+
+      // 繪製偷吃老鼠
+      for (const rat of rats) {
+        if (!rat.alive && rat.squishTimer <= 0) continue;
+        const sx = rat.x - camX - 1;
+        if (sx < -20 || sx > CANVAS_WIDTH + 20) continue;
+
+        const facingRight = rat.vx > 0;
+        const ratSprite = Math.floor(rat.animTimer / 10) % 2 === 0 ? 'rat_walk1' : 'rat_walk2';
+
+        if (!rat.alive) {
+          // 被踩扁的壓縮像素效果
+          ctx.save();
+          ctx.translate(Math.round(sx), Math.round(rat.y + 8));
+          ctx.scale(1, 0.45);
+          drawSprite(ratSprite, 0, 0, facingRight);
+          ctx.restore();
+        } else {
+          drawSprite(ratSprite, sx, rat.y - 2, facingRight);
+        }
+      }
+
+      // 繪製主角橘貓外送員（含空中蓄力發光與高速重砸殘影特效）
+      const showCat = player.invulnTimer === 0 || Math.floor(player.invulnTimer / 4) % 2 === 0;
+      if (showCat) {
+        let catSprite = 'cat_idle';
+        if (!player.grounded) {
+          catSprite = 'cat_jump';
+        } else if (Math.abs(player.vx) > 0.25) {
+          catSprite = player.animFrame === 0 ? 'cat_run1' : 'cat_run2';
+        }
+
+        const drawX = Math.round(player.x + player.offsetX - camX);
+        const drawY = Math.round(player.y + player.offsetY);
+
+        if (player.poundState === 'CHARGING') {
+          ctx.fillStyle = frameCount % 2 === 0 ? '#ffd60a' : '#00f5d4';
+          ctx.fillRect(drawX - 1, drawY - 1, 18, 18);
+        } else if (player.poundState === 'SLAMMING') {
+          ctx.fillStyle = 'rgba(0, 245, 212, 0.55)';
+          ctx.fillRect(drawX + 2, drawY - 8, 12, 10);
+        }
+
+        drawSprite(catSprite, drawX, drawY, !player.facingRight);
+      }
+
+      // 繪製粒子與浮動加分數字
+      for (const p of particles) {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(Math.round(p.x - camX), Math.round(p.y), p.size, p.size);
+      }
+    }
+
+    // 浮動加分數字於高清層繪製，確保清晰不糊
+    function drawFloatingTexts(targetCtx) {
+      const camX = Math.round(cameraX);
+      for (const ft of floatingTexts) {
+        drawCrispText(targetCtx, ft.text, ft.x - camX, ft.y, {
+          size: 8,
+          color: ft.color,
+          align: 'left',
+          english: true
+        });
+      }
+    }
+
+    function drawHUD(targetCtx) {
+      const scale = targetCtx === displayCtx && ultraSharpMode ? HD_SCALE : 1;
+
+      // 頂部半透明黑底資訊欄
+      targetCtx.fillStyle = 'rgba(12, 14, 28, 0.88)';
+      targetCtx.fillRect(0, 0, CANVAS_WIDTH * scale, 24 * scale);
+      targetCtx.fillStyle = '#2b3359';
+      targetCtx.fillRect(0, 23 * scale, CANVAS_WIDTH * scale, 1 * scale);
+
+      // SCORE
+      drawCrispText(targetCtx, 'SCORE', 8, 10, { size: 7.5, color: '#00f5d4', english: true, outline: false });
+      drawCrispText(targetCtx, String(score).padStart(5, '0'), 8, 20, { size: 8, color: '#ffffff', english: true, outline: false });
+
+      // FISH (圖示從離屏精靈圖高清放大貼上)
+      const fishEntry = spriteCache['fish_gold'];
+      if (fishEntry) {
+        targetCtx.drawImage(fishEntry.normal, 66 * scale, 4 * scale, 16 * scale, 16 * scale);
+      }
+      drawCrispText(targetCtx, 'x' + String(fishCount).padStart(2, '0'), 83, 16, { size: 8, color: '#ffd60a', english: true, outline: false });
+
+      // TIME
+      drawCrispText(targetCtx, 'TIME', 124, 10, {
+        size: 7.5,
+        color: timeLeft <= 20 ? '#ff595e' : '#00f5d4',
+        english: true,
+        outline: false
+      });
+      drawCrispText(targetCtx, String(timeLeft).padStart(3, '0'), 128, 20, {
+        size: 8,
+        color: timeLeft <= 20 && Math.floor(frameCount / 10) % 2 === 0 ? '#ff595e' : '#ffffff',
+        english: true,
+        outline: false
+      });
+
+      // LIFE (愛心數)
+      drawCrispText(targetCtx, 'LIFE', 178, 10, { size: 7.5, color: '#ff75a0', english: true, outline: false });
+      const heartEntry = spriteCache['heart'];
+      for (let i = 0; i < 3; i++) {
+        if (i < lives && heartEntry) {
+          targetCtx.drawImage(heartEntry.normal, (176 + i * 16) * scale, 9 * scale, 16 * scale, 16 * scale);
+        } else {
+          targetCtx.fillStyle = '#2f354a';
+          targetCtx.fillRect((181 + i * 16) * scale, 14 * scale, 6 * scale, 5 * scale);
+        }
+      }
+    }
+
+    function drawTitleOverlay(targetCtx) {
+      const scale = targetCtx === displayCtx && ultraSharpMode ? HD_SCALE : 1;
+      const stage = STAGES[currentStageIndex];
+
+      targetCtx.fillStyle = 'rgba(10, 12, 26, 0.88)';
+      targetCtx.fillRect(12 * scale, 26 * scale, 232 * scale, 206 * scale);
+      targetCtx.strokeStyle = '#00f5d4';
+      targetCtx.lineWidth = 2 * scale;
+      targetCtx.strokeRect(13 * scale, 27 * scale, 230 * scale, 204 * scale);
+
+      drawCrispText(targetCtx, '賽博貓咪外送員', 128, 44, {
+        size: 13,
+        color: '#00f5d4',
+        align: 'center'
+      });
+
+      drawCrispText(targetCtx, 'CYBER CAT DELIVERY - 4 STAGES', 128, 56, {
+        size: 7,
+        color: '#ffbe0b',
+        align: 'center',
+        english: true
+      });
+
+      // 橘貓與拉麵招牌展示
+      if (spriteCache['cat_idle']) {
+        targetCtx.drawImage(spriteCache['cat_idle'].normal, 96 * scale, 60 * scale, 16 * scale, 16 * scale);
+      }
+      if (spriteCache['ramen_flag']) {
+        targetCtx.drawImage(spriteCache['ramen_flag'].normal, 142 * scale, 60 * scale, 16 * scale, 16 * scale);
+      }
+
+      // 難度關卡選擇列（支援 1~4 鍵或點擊按鈕切換）
+      drawCrispText(targetCtx, `起始難度：[${stage.id}] ${stage.diffName} (按1~4切換)`, 128, 88, {
+        size: 9.5,
+        color: stage.diffColor,
+        align: 'center'
+      });
+
+      // 中文圖例規則表
+      if (spriteCache['supply_box']) {
+        targetCtx.drawImage(spriteCache['supply_box'].normal, 24 * scale, 94 * scale, 16 * scale, 16 * scale);
+      }
+      drawCrispText(targetCtx, '上頂 / 空中按↓重砸開箱：+50', 44, 106, { size: 9, color: '#ffd60a' });
+
+      if (spriteCache['rat_walk1']) {
+        targetCtx.drawImage(spriteCache['rat_walk1'].normal, 24 * scale, 113 * scale, 16 * scale, 16 * scale);
+      }
+      drawCrispText(targetCtx, '從上方踩扁或重砸老鼠：+100', 44, 125, { size: 9, color: '#ff75a0' });
+
+      if (spriteCache['heart']) {
+        targetCtx.drawImage(spriteCache['heart'].normal, 24 * scale, 132 * scale, 16 * scale, 16 * scale);
+      }
+      drawCrispText(targetCtx, '4大劇情關卡：簡單→超困難', 44, 144, { size: 9.5, color: '#ffffff' });
+
+      drawCrispText(targetCtx, '方向鍵移動  空白鍵跳(長按大跳)', 128, 164, {
+        size: 9,
+        color: '#b8c2eb',
+        align: 'center'
+      });
+      drawCrispText(targetCtx, '空中按 [↓ / S] 或手機 [▼重砸] 砸箱', 128, 178, {
+        size: 9,
+        color: '#ffbe0b',
+        align: 'center'
+      });
+
+      if (Math.floor(frameCount / 22) % 2 === 0) {
+        drawCrispText(targetCtx, '▶ 按 空白鍵 進入劇情 ◀', 128, 215, {
+          size: 11.5,
+          color: '#00f5d4',
+          align: 'center'
+        });
+      }
+    }
+
+    // 關卡劇情前導過場畫面
+    function drawStageIntroOverlay(targetCtx) {
+      const scale = targetCtx === displayCtx && ultraSharpMode ? HD_SCALE : 1;
+      const stage = STAGES[currentStageIndex];
+
+      targetCtx.fillStyle = 'rgba(8, 10, 24, 0.92)';
+      targetCtx.fillRect(12 * scale, 30 * scale, 232 * scale, 196 * scale);
+      targetCtx.strokeStyle = stage.diffColor;
+      targetCtx.lineWidth = 2 * scale;
+      targetCtx.strokeRect(13 * scale, 31 * scale, 230 * scale, 194 * scale);
+
+      drawCrispText(targetCtx, stage.codeName, 128, 50, {
+        size: 10.5,
+        color: '#00f5d4',
+        align: 'center'
+      });
+
+      drawCrispText(targetCtx, `難度等級：【 ${stage.diffName} 】  限時 ${stage.timeLimit} 秒`, 128, 66, {
+        size: 9.5,
+        color: stage.diffColor,
+        align: 'center'
+      });
+
+      // 角色對話頭像框
+      if (spriteCache['cat_idle']) {
+        targetCtx.drawImage(spriteCache['cat_idle'].normal, 112 * scale, 74 * scale, 16 * scale, 16 * scale);
+      }
+      if (spriteCache['ramen_flag']) {
+        targetCtx.drawImage(spriteCache['ramen_flag'].normal, 132 * scale, 74 * scale, 16 * scale, 16 * scale);
+      }
+
+      // 繪製 4 行劇情文字
+      stage.story.forEach((line, idx) => {
+        drawCrispText(targetCtx, line, 128, 108 + idx * 17, {
+          size: idx === 0 ? 10 : 9.2,
+          color: idx === 0 ? '#ffd60a' : '#ffffff',
+          align: 'center'
+        });
+      });
+
+      if (Math.floor(frameCount / 20) % 2 === 0) {
+        drawCrispText(targetCtx, '▶ 按 空白鍵 / 點擊 開始外送 ◀', 128, 208, {
+          size: 10.5,
+          color: '#00f5d4',
+          align: 'center'
+        });
+      }
+    }
+
+    function drawRulesModal(targetCtx) {
+      const scale = targetCtx === displayCtx && ultraSharpMode ? HD_SCALE : 1;
+
+      targetCtx.fillStyle = 'rgba(8, 10, 22, 0.94)';
+      targetCtx.fillRect(10 * scale, 26 * scale, 236 * scale, 206 * scale);
+      targetCtx.strokeStyle = '#ffbe0b';
+      targetCtx.lineWidth = 2 * scale;
+      targetCtx.strokeRect(11 * scale, 27 * scale, 234 * scale, 204 * scale);
+
+      drawCrispText(targetCtx, '【 賽博外送員任務規則 】', 128, 42, {
+        size: 11,
+        color: '#ffbe0b',
+        align: 'center'
+      });
+
+      drawCrispText(targetCtx, '1. 目標：120秒內抵達拉麵招牌', 18, 58, { size: 9.5, color: '#00f5d4' });
+      drawCrispText(targetCtx, '   將熱騰騰拉麵送給揮手客人。', 18, 69, { size: 9, color: '#ffffff' });
+
+      drawCrispText(targetCtx, '2. 開箱：頂撞或空中重砸補給箱', 18, 84, { size: 9.5, color: '#ffd60a' });
+      drawCrispText(targetCtx, '   地上箱子可用重砸打開(+50分)。', 18, 95, { size: 9, color: '#ffffff' });
+
+      drawCrispText(targetCtx, '3. 踩敵：上方踩扁或重砸震飛老鼠', 18, 110, { size: 9.5, color: '#ff75a0' });
+      drawCrispText(targetCtx, '   消滅偷吃老鼠獲得 +100 分。', 18, 121, { size: 9, color: '#ffffff' });
+
+      drawCrispText(targetCtx, '4. 扣命：側撞老鼠或掉入深淵', 18, 136, { size: 9.5, color: '#ff595e' });
+      drawCrispText(targetCtx, '   扣除 1 顆愛心(歸零即失敗)。', 18, 147, { size: 9, color: '#ffffff' });
+
+      drawCrispText(targetCtx, '【 電腦 / 手機 雙平台操作 】', 18, 165, { size: 9.5, color: '#00f5d4' });
+      drawCrispText(targetCtx, '電腦：←→移動 / 空白鍵跳 / ↓重砸', 18, 177, { size: 9, color: '#b8c2eb' });
+      drawCrispText(targetCtx, '手機：◀ ▶移動 / JUMP跳 / ▼重砸', 18, 189, { size: 9, color: '#b8c2eb' });
+      drawCrispText(targetCtx, '(跳到空中按 ↓ / S / ▼重砸 蓄力下砸)', 18, 201, { size: 8.5, color: '#ffd60a' });
+
+      drawCrispText(targetCtx, '點擊畫面或按 [H]/[空白鍵] 繼續', 128, 221, {
+        size: 10,
+        color: '#00f5d4',
+        align: 'center'
+      });
+    }
+
+    function drawEndOverlay(targetCtx, isVictory) {
+      const scale = targetCtx === displayCtx && ultraSharpMode ? HD_SCALE : 1;
+      const stage = STAGES[currentStageIndex];
+      const hasNextStage = isVictory && currentStageIndex < STAGES.length - 1;
+
+      targetCtx.fillStyle = 'rgba(10, 12, 26, 0.92)';
+      targetCtx.fillRect(14 * scale, 40 * scale, 228 * scale, 166 * scale);
+      targetCtx.strokeStyle = isVictory ? stage.diffColor : '#ff595e';
+      targetCtx.lineWidth = 2 * scale;
+      targetCtx.strokeRect(15 * scale, 41 * scale, 226 * scale, 164 * scale);
+
+      drawCrispText(targetCtx, isVictory ? 'DELIVERY COMPLETE' : 'DELIVERY FAILED', 128, 62, {
+        size: 10.5,
+        color: isVictory ? '#00f5d4' : '#ff595e',
+        align: 'center',
+        english: true
+      });
+
+      const titleMsg = isVictory
+        ? (hasNextStage ? `第 ${stage.id} 關 (${stage.diffName}) 外送達成！` : '全 4 關傳奇外送制霸完成！')
+        : `第 ${stage.id} 關 (${stage.diffName}) 外送失敗…`;
+
+      drawCrispText(targetCtx, titleMsg, 128, 81, {
+        size: 10,
+        color: isVictory ? '#ffffff' : '#ffbe0b',
+        align: 'center'
+      });
+
+      drawCrispText(targetCtx, '累積總分：' + String(score).padStart(5, '0') + ' 分', 128, 104, {
+        size: 10,
+        color: '#ffffff',
+        align: 'center'
+      });
+      drawCrispText(targetCtx, '收集小魚乾：' + String(fishCount).padStart(2, '0') + ' 條', 128, 121, {
+        size: 10,
+        color: '#ffd60a',
+        align: 'center'
+      });
+
+      if (isVictory) {
+        const starsEarned = Math.min(5, Math.max(1, Math.floor(score / 450) + (lives === 3 ? 1 : 0)));
+        drawCrispText(targetCtx, '外送員評價：' + '★'.repeat(starsEarned) + '☆'.repeat(5 - starsEarned), 128, 139, {
+          size: 10,
+          color: '#ffbe0b',
+          align: 'center'
+        });
+        if (hasNextStage) {
+          const nextSt = STAGES[currentStageIndex + 1];
+          drawCrispText(targetCtx, `下一關：【${nextSt.diffName}】${nextSt.codeName.split(' - ')[1]}`, 128, 156, {
+            size: 9,
+            color: nextSt.diffColor,
+            align: 'center'
+          });
+        }
+      } else {
+        drawCrispText(targetCtx, '按 [R] 重玩本關，或切換其他難度', 128, 144, {
+          size: 9.5,
+          color: '#8d99ae',
+          align: 'center'
+        });
+      }
+
+      if (Math.floor(frameCount / 20) % 2 === 0) {
+        const promptText = hasNextStage
+          ? '▶ 按 [空白鍵] 進入下一關 ([R]重玩) ◀'
+          : '▶ 按 [空白鍵] / [R] 重新挑戰 ◀';
+        drawCrispText(targetCtx, promptText, 128, 186, {
+          size: 9.5,
+          color: '#00f5d4',
+          align: 'center'
+        });
+      }
+    }
+
+    function gameLoop(now) {
+      updateGame(now);
+
+      // 1. 先將 256x240 像素舞台（夜空、屋頂、橘貓、老鼠、道具）繪製在邏輯畫布
+      ctx.save();
+      if (screenShake > 0) {
+        const dx = Math.round((Math.random() - 0.5) * 4);
+        const dy = Math.round((Math.random() - 0.5) * 4);
+        ctx.translate(dx, dy);
+      }
+
+      drawBackground();
+      drawLevel();
+      ctx.restore();
+
+      // 2. 將 256x240 像素舞台無損整數倍放大貼至 768x720 高清主畫布
+      displayCtx.imageSmoothingEnabled = false;
+      displayCtx.clearRect(0, 0, displayCanvas.width, displayCanvas.height);
+      displayCtx.drawImage(
+        canvas,
+        0, 0, CANVAS_WIDTH, CANVAS_HEIGHT,
+        0, 0, displayCanvas.width, displayCanvas.height
+      );
+
+      // 3. 在 768x720 高清主畫布上直接以原生高清像素字體繪製 HUD、規則與所有文字
+      drawFloatingTexts(displayCtx);
+      drawHUD(displayCtx);
+
+      if (gameState === 'TITLE') {
+        drawTitleOverlay(displayCtx);
+      } else if (gameState === 'STAGE_INTRO') {
+        drawStageIntroOverlay(displayCtx);
+      } else if (gameState === 'GAMEOVER') {
+        drawEndOverlay(displayCtx, false);
+      } else if (gameState === 'VICTORY') {
+        drawEndOverlay(displayCtx, true);
+      }
+
+      if (showRulesModal) {
+        drawRulesModal(displayCtx);
+      }
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    // ============================================================================
+    // 11. 鍵盤與行動裝置輸入監聽
+    // ============================================================================
+    function isSpaceOrJumpKey(e) {
+      return (
+        e.code === 'Space' ||
+        e.key === ' ' ||
+        e.key === 'Spacebar' ||
+        e.keyCode === 32 ||
+        e.code === 'ArrowUp' ||
+        e.code === 'KeyW'
+      );
+    }
+
+    function isPureSpaceKey(e) {
+      return e.code === 'Space' || e.key === ' ' || e.key === 'Spacebar' || e.keyCode === 32;
+    }
+
+    function toggleRulesModal() {
+      showRulesModal = !showRulesModal;
+      // 清除殘留按鍵狀態避免關閉視窗後角色自動滑行
+      keys.left = false;
+      keys.right = false;
+      keys.jump = false;
+      keys.jumpJustPressed = false;
+      keys.down = false;
+      keys.downJustPressed = false;
+      keys.ignoreJumpUntilRelease = false;
+      if (!showRulesModal && gameState === 'PLAYING') {
+        lastTimerTimestamp = performance.now();
+      }
+    }
+
+    function triggerRestart(consumeSpaceKey = false) {
+      sfx.init();
+      showRulesModal = false;
+      // 失敗時重置回第1關(簡單)或重玩當前關卡：若在結束畫面按R則重玩當前難度關卡
+      enterStageIntro(currentStageIndex, true, consumeSpaceKey);
+    }
+
+    function cycleDifficultyStage() {
+      const nextIdx = (currentStageIndex + 1) % STAGES.length;
+      enterStageIntro(nextIdx, true, false);
+    }
+
+    function handleKeyDown(e) {
+      const isControlKey =
+        ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space', 'Enter'].includes(e.code) ||
+        isPureSpaceKey(e);
+
+      if (isControlKey) {
+        e.preventDefault();
+      }
+
+      sfx.init();
+
+      // 數字鍵 1~4 快速切換 簡單 / 中等 / 困難 / 超困難 關卡
+      if (['Digit1', 'Digit2', 'Digit3', 'Digit4'].includes(e.code)) {
+        const idx = parseInt(e.code.replace('Digit', ''), 10) - 1;
+        showRulesModal = false;
+        enterStageIntro(idx, true, false);
+        return;
+      }
+
+      if (e.code === 'KeyH') {
+        toggleRulesModal();
+        return;
+      }
+
+      if (showRulesModal) {
+        if (isPureSpaceKey(e) || e.code === 'Escape' || e.code === 'Enter') {
+          toggleRulesModal();
+        } else if (e.code === 'KeyR') {
+          triggerRestart(false);
+        }
+        return;
+      }
+
+      // 標題畫面：按下空白鍵（或 Enter / 上鍵）進入劇情前導
+      if (gameState === 'TITLE') {
+        if (isSpaceOrJumpKey(e) || e.code === 'Enter') {
+          startGameFromTitle(true);
+        }
+        return;
+      }
+
+      // 劇情前導畫面：按下空白鍵（或 Enter）正式開始本關
+      if (gameState === 'STAGE_INTRO') {
+        if ((isSpaceOrJumpKey(e) || e.code === 'Enter') && !e.repeat) {
+          beginStagePlay(true);
+        }
+        return;
+      }
+
+      // 結束或通關畫面：支援 R 鍵重玩本關，通關後按空白鍵自動進入下一難度關卡
+      if (gameState === 'GAMEOVER' || gameState === 'VICTORY') {
+        if (e.code === 'KeyR') {
+          triggerRestart(false);
+          return;
+        }
+        if (isPureSpaceKey(e) && !e.repeat) {
+          if (gameState === 'VICTORY' && currentStageIndex < STAGES.length - 1) {
+            enterStageIntro(currentStageIndex + 1, false, true);
+          } else {
+            enterStageIntro(0, true, true);
+          }
+          return;
+        }
+      }
+
+      if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
+        keys.left = true;
+      }
+      if (e.code === 'ArrowRight' || e.code === 'KeyD') {
+        keys.right = true;
+      }
+      if (isSpaceOrJumpKey(e)) {
+        if (keys.ignoreJumpUntilRelease) return;
+        if (!keys.jump && !e.repeat) {
+          keys.jumpJustPressed = true;
+        }
+        keys.jump = true;
+      }
+      if (e.code === 'ArrowDown' || e.code === 'KeyS') {
+        if (!keys.down && !e.repeat) {
+          keys.downJustPressed = true;
+        }
+        keys.down = true;
+      }
+      if (e.code === 'KeyR') {
+        triggerRestart(false);
+      }
+      if (e.code === 'KeyM') {
+        toggleMute();
+      }
+    }
+
+    function handleKeyUp(e) {
+      if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
+        keys.left = false;
+      }
+      if (e.code === 'ArrowRight' || e.code === 'KeyD') {
+        keys.right = false;
+      }
+      if (isSpaceOrJumpKey(e)) {
+        keys.jump = false;
+        keys.ignoreJumpUntilRelease = false;
+      }
+      if (e.code === 'ArrowDown' || e.code === 'KeyS') {
+        keys.down = false;
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown, { passive: false, capture: true });
+    window.addEventListener('keyup', handleKeyUp, { capture: true });
+
+    // 視窗失焦時清除按鍵避免卡鍵
+    window.addEventListener('blur', () => {
+      keys.left = false;
+      keys.right = false;
+      keys.jump = false;
+      keys.jumpJustPressed = false;
+      keys.down = false;
+      keys.downJustPressed = false;
+      keys.ignoreJumpUntilRelease = false;
+    });
+
+    // 點擊畫布時自動取得焦點；若在標題、劇情、規則或結束畫面點擊畫布也可直接操作（支援手機觸控點擊）
+    displayCanvas.addEventListener('pointerdown', () => {
+      ensureFocus();
+      sfx.init();
+      if (showRulesModal) {
+        toggleRulesModal();
+      } else if (gameState === 'TITLE') {
+        startGameFromTitle(false);
+      } else if (gameState === 'STAGE_INTRO') {
+        beginStagePlay(false);
+      } else if (gameState === 'VICTORY') {
+        if (currentStageIndex < STAGES.length - 1) {
+          enterStageIntro(currentStageIndex + 1, false, false);
+        } else {
+          enterStageIntro(0, true, false);
+        }
+      } else if (gameState === 'GAMEOVER') {
+        triggerRestart(false);
+      }
+    });
+
+    // 關卡難度切換按鈕
+    const stageBtn = document.getElementById('stageBtn');
+    if (stageBtn) {
+      stageBtn.addEventListener('click', () => {
+        sfx.init();
+        cycleDifficultyStage();
+        ensureFocus();
+      });
+    }
+
+    // 銳利高清模式切換按鈕
+    const sharpBtn = document.getElementById('sharpBtn');
+    if (sharpBtn) {
+      sharpBtn.addEventListener('click', () => {
+        ultraSharpMode = !ultraSharpMode;
+        displayCanvas.width = ultraSharpMode ? 768 : 256;
+        displayCanvas.height = ultraSharpMode ? 720 : 240;
+        displayCtx.imageSmoothingEnabled = false;
+        sharpBtn.textContent = ultraSharpMode ? 'HD: 銳利' : 'HD: 原生';
+        sharpBtn.style.color = ultraSharpMode ? '#00f5d4' : '#ffbe0b';
+        ensureFocus();
+      });
+    }
+
+    // 規則說明按鈕與靜音切換按鈕
+    const helpBtn = document.getElementById('helpBtn');
+    if (helpBtn) {
+      helpBtn.addEventListener('click', () => {
+        sfx.init();
+        toggleRulesModal();
+        ensureFocus();
+      });
+    }
+
+    const muteBtn = document.getElementById('muteBtn');
+    function toggleMute() {
+      sfx.muted = !sfx.muted;
+      if (muteBtn) {
+        muteBtn.textContent = sfx.muted ? 'SFX: OFF [M]' : 'SFX: ON [M]';
+        muteBtn.style.color = sfx.muted ? '#8d99ae' : '#ffbe0b';
+      }
+    }
+
+    if (muteBtn) {
+      muteBtn.addEventListener('click', () => {
+        sfx.init();
+        toggleMute();
+        ensureFocus();
+      });
+    }
+
+    // 一鍵在瀏覽器新視窗/新分頁開啟獨立遊戲（免存檔案，支援加到桌面主畫面）
+    const openTabBtn = document.getElementById('openTabBtn');
+    if (openTabBtn) {
+      openTabBtn.addEventListener('click', () => {
+        try {
+          const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+          const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+          const blobUrl = URL.createObjectURL(blob);
+          const win = window.open(blobUrl, '_blank');
+          if (!win) {
+            // 若瀏覽器攔截彈跳視窗，則在當前分頁直接開啟
+            window.location.href = blobUrl;
+          }
+        } catch (err) {
+          console.error('開啟獨立視窗失敗:', err);
+        }
+        ensureFocus();
+      });
+    }
+
+    // 一鍵下載完整單機 HTML 遊戲檔案
+    const downloadBtn = document.getElementById('downloadBtn');
+    if (downloadBtn) {
+      downloadBtn.addEventListener('click', () => {
+        try {
+          const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+          const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = '賽博貓咪外送員_CyberCatDelivery.html';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        } catch (err) {
+          console.error('下載失敗:', err);
+        }
+        ensureFocus();
+      });
+    }
+
+    // 虛擬觸控按鍵綁定（支援多點觸控同時按住移動＋長按大跳，並防呆處理滑出按鈕放開）
+    function bindTouchButton(id, onDown, onUp) {
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      const handlePress = (e) => {
+        if (e.cancelable) e.preventDefault();
+        sfx.init();
+        el.classList.add('pressed');
+        onDown();
+      };
+
+      const handleRelease = (e) => {
+        if (e && e.cancelable) e.preventDefault();
+        el.classList.remove('pressed');
+        if (onUp) onUp();
+      };
+
+      el.addEventListener('touchstart', handlePress, { passive: false });
+      el.addEventListener('touchend', handleRelease, { passive: false });
+      el.addEventListener('touchcancel', handleRelease, { passive: false });
+      el.addEventListener('mousedown', handlePress);
+      el.addEventListener('mouseup', handleRelease);
+      el.addEventListener('mouseleave', handleRelease);
+    }
+
+    bindTouchButton('btnLeft', () => { if (!showRulesModal) keys.left = true; }, () => { keys.left = false; });
+    bindTouchButton('btnRight', () => { if (!showRulesModal) keys.right = true; }, () => { keys.right = false; });
+    bindTouchButton('btnJump', () => {
+      if (showRulesModal) {
+        toggleRulesModal();
+        return;
+      }
+      if (gameState === 'TITLE') {
+        startGameFromTitle(false);
+        return;
+      }
+      if (gameState === 'STAGE_INTRO') {
+        beginStagePlay(false);
+        return;
+      }
+      if (!keys.jump) keys.jumpJustPressed = true;
+      keys.jump = true;
+    }, () => { keys.jump = false; });
+    bindTouchButton('btnSmash', () => {
+      if (showRulesModal || gameState !== 'PLAYING') return;
+      if (!keys.down) keys.downJustPressed = true;
+      keys.down = true;
+    }, () => { keys.down = false; });
+    bindTouchButton('btnStage', () => { sfx.init(); cycleDifficultyStage(); });
+    bindTouchButton('btnHelp', () => { toggleRulesModal(); });
+    bindTouchButton('btnRestart', () => { triggerRestart(false); });
+
+    // ============================================================================
+    // 12. 啟動遊戲引擎
+    // ============================================================================
+    window.onload = () => {
+      preRenderSprites();
+      updateStageButtonUI();
+      initLevel(true);
+      ensureFocus();
+      requestAnimationFrame(gameLoop);
+    };
+  </script>
+
+</div></body></html>
